@@ -1,0 +1,152 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const grid = document.getElementById('garage-grid');
+    const searchInput = document.getElementById('search-input');
+    const totalCarsEl = document.getElementById('total-cars');
+
+    if (!grid) return;
+
+    let cars = window.getData() || [];
+
+    // Helper to get random image based on ID
+    function getCarImage(id) {
+        const images = [
+            'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fd?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1606152421802-db97b9c7a11b?auto=format&fit=crop&q=80&w=800',
+            'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=800'
+        ];
+        return images[id % images.length];
+    }
+
+    function renderCars(filterText = '') {
+        const lowerFilter = filterText.toLowerCase();
+        
+        let filteredCars = cars;
+        if (lowerFilter) {
+            filteredCars = cars.filter(car => 
+                (car.brand && car.brand.toLowerCase().includes(lowerFilter)) ||
+                (car.model && car.model.toLowerCase().includes(lowerFilter))
+            );
+        }
+
+        // Обновляем счетчик
+        if (totalCarsEl) {
+            totalCarsEl.textContent = filteredCars.length;
+        }
+
+        // Очищаем сетку, кроме add-card
+        const addCardHtml = `
+            <a href="form.html" class="card add-card">
+                <div class="add-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+                </div>
+                <h3 class="text-lg-bold-mb-10">Добавить новый транспорт</h3>
+                <p class="text-sm-light">Отслеживайте обслуживание для еще одного автомобиля в гараже.</p>
+            </a>
+        `;
+
+        let html = '';
+
+        filteredCars.forEach(car => {
+            const title = window.formatTitle ? (window.formatTitle(car.brand) + ' ' + window.formatTitle(car.model)) : (car.brand + ' ' + car.model);
+            
+            html += `
+            <div class="card" data-id="${car.id}">
+                <div class="card-img">
+                    <img src="${getCarImage(car.id)}" alt="${title}">
+                    <span class="card-due ${car.status ? 'success' : ''}">${car.status ? 'Обслужено' : 'Ждет ТО'}</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">${title}</h3>
+                    <div class="card-meta" style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>${car.mileage.toLocaleString('ru-RU')} км</span>
+                        <button class="btn-edit-mileage" style="font-size: 0.8rem; padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; background: transparent; cursor: pointer;">Редактировать пробег</button>
+                    </div>
+
+                    <div class="txt-xs-light-upper-mb-10" style="margin-top: 15px;">Статус:</div>
+                    <div class="tags">
+                        <span class="tag" style="background: ${car.status ? 'var(--accent)' : 'var(--background-dark)'}; color: ${car.status ? '#000' : 'var(--text-light)'}">
+                            ${car.status ? 'В порядке' : 'Требует внимания'}
+                        </span>
+                    </div>
+
+                    <div class="card-footer" style="margin-top: 15px;">
+                        <label class="checkbox-label ${car.status ? 'txt-accent' : ''}">
+                            <input type="checkbox" class="status-checkbox" ${car.status ? 'checked' : ''}> Выполнено
+                        </label>
+                        <button class="icon-btn btn-delete" title="Удалить">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-2 14H7L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+        });
+
+        html += addCardHtml;
+        grid.innerHTML = html;
+
+        // Назначаем обработчики
+        attachEvents();
+    }
+
+    function attachEvents() {
+        // Удаление
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const card = e.target.closest('.card');
+                const id = parseInt(card.dataset.id, 10);
+                if (confirm('Вы уверены, что хотите удалить этот автомобиль?')) {
+                    cars = cars.filter(c => c.id !== id);
+                    window.saveData(cars);
+                    renderCars(searchInput ? searchInput.value : '');
+                }
+            });
+        });
+
+        // Редактирование пробега
+        document.querySelectorAll('.btn-edit-mileage').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const card = e.target.closest('.card');
+                const id = parseInt(card.dataset.id, 10);
+                const idx = cars.findIndex(c => c.id === id);
+                if (idx !== -1) {
+                    const newMileageStr = prompt(`Введите новый пробег для ${window.formatTitle(cars[idx].brand)} ${window.formatTitle(cars[idx].model)}:`, cars[idx].mileage);
+                    if (newMileageStr !== null) {
+                        const newMileage = parseInt(newMileageStr.trim(), 10);
+                        if (!isNaN(newMileage) && newMileage >= 0) {
+                            cars[idx].mileage = newMileage;
+                            window.saveData(cars);
+                            renderCars(searchInput ? searchInput.value : '');
+                        } else {
+                            alert('Некорректный пробег!');
+                        }
+                    }
+                }
+            });
+        });
+
+        // Чекбокс статуса
+        document.querySelectorAll('.status-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const card = e.target.closest('.card');
+                const id = parseInt(card.dataset.id, 10);
+                const idx = cars.findIndex(c => c.id === id);
+                if (idx !== -1) {
+                    cars[idx].status = e.target.checked;
+                    window.saveData(cars);
+                    renderCars(searchInput ? searchInput.value : '');
+                }
+            });
+        });
+    }
+
+    // Слушатель на фильтр
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            renderCars(e.target.value);
+        });
+    }
+
+    // Инициализация
+    renderCars();
+});

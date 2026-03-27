@@ -1,0 +1,141 @@
+/* Two Column Form & List (form.html) */
+.split-layout {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 4rem;
+}
+
+@media (max-width: 768px) {
+    .split-layout {
+        flex-direction: column;
+    }
+}
+
+.form-panel {
+    flex: 1;
+    border: 3px solid var(--secondary);
+    border-radius: 16px;
+    padding: 30px;
+    background-color: var(--background-light);
+}
+
+.list-panel {
+    flex: 1;
+    border: 3px solid var(--accent);
+    border-radius: 16px;
+    padding: 30px;
+    background-color: var(--background-light);
+}
+
+.list-panel h3 {
+    color: var(--accent);
+    margin-bottom: 20px;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-light);
+    padding: 40px 0;
+    font-style: italic;
+}
+
+
+/* Extracted Inline Styles */
+.text-center-mb-2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.txt-primary {
+    color: var(--primary);
+}
+
+.mx-auto {
+    margin: 0 auto;
+}
+
+.txt-secondary-mb-20 {
+    color: var(--secondary);
+    margin-bottom: 20px;
+}
+
+.mb-30 {
+    margin-bottom: 30px;
+}
+
+.flex-gap-15 {
+    display: flex;
+    gap: 15px;
+}
+
+.flex-1-bg-secondary {
+    flex: 1;
+    background-color: var(--secondary);
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.text-sm-light-mb-20 {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin-bottom: 20px;
+}
+
+/* Custom Autocomplete */
+.autocomplete-wrapper {
+    position: relative;
+}
+
+.autocomplete-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--background-light);
+    border: 1px solid var(--background-dark);
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+    display: none;
+}
+
+.autocomplete-list.active {
+    display: block;
+}
+
+.autocomplete-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--text-dark);
+    transition: background 0.3s;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.autocomplete-item:hover {
+    background: rgba(255, 87, 87, 0.05);
+    color: var(--primary);
+}
+
+.autocomplete-hint {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 2px;
+}
+
+.form-title {
+    color: var(--primary);
+}
+
+.w-100 {
+    width: 100%;
+}
+
+.mb-25 {
+    margin-bottom: 25px;
+}

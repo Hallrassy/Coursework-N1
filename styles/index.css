@@ -1,0 +1,317 @@
+/* Hero Section */
+.hero {
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+    margin-bottom: 4rem;
+}
+
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column;
+    }
+}
+
+.hero-content {
+    flex: 1;
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: var(--primary-light);
+    color: #fff;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+}
+
+h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+}
+
+.lead {
+    font-size: 1.125rem;
+    color: var(--text-light);
+    margin-bottom: 2rem;
+    max-width: 600px;
+}
+
+/* How to Use Section */
+.how-to-section {
+    background-color: var(--background-dark);
+    padding: 5rem 0;
+    margin-bottom: 5rem;
+}
+
+.how-to-header {
+    margin-bottom: 3rem;
+    max-width: 600px;
+}
+
+.how-to-header h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+
+.how-to-header p {
+    font-size: 1.125rem;
+    color: var(--text-light);
+}
+
+.how-to-grid {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.step-card {
+    flex: 1 1 calc(33% - 20px);
+    min-width: 280px;
+    background-color: var(--background-light);
+    border-radius: 12px;
+    padding: 40px 30px;
+    box-shadow: 0 4px 15px var(--accent-dark);
+    position: relative;
+    border: 3px solid var(--accent-light);
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+}
+
+.step-number {
+    position: absolute;
+    top: -20px;
+    right: 20px;
+    font-size: 6rem;
+    font-weight: 800;
+    color: var(--background);
+}
+
+.step-icon {
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    & svg {
+        width: 50px;
+        height: 50px;
+    }
+
+    & svg path,
+    svg rect {
+        background-color: rgba(255, 87, 87, 0.1);
+        fill: var(--primary);
+        stroke: var(--primary);
+    }
+}
+
+.step-card h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.step-card p {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    line-height: 1.6;
+    position: relative;
+}
+
+/* Forms */
+.form-container {
+    flex: 1;
+    background-color: var(--background-light);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 10px 30px var(--card-shadow);
+}
+
+.form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--primary);
+}
+
+.form-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+/* Extracted Inline Styles */
+.flex-center-align {
+    align-items: center;
+}
+
+.mr-15 {
+    margin-right: 15px;
+}
+
+.flex-1-end {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.profile-card-cta {
+    background: var(--background-dark);
+    border-radius: 16px;
+    padding: 40px 30px;
+    box-shadow: 0 20px 40px var(--card-shadow);
+    text-align: center;
+    max-width: 320px;
+    width: 100%;
+    position: relative;
+}
+
+.profile-avatar-wrapper {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 15px;
+    border: 3px solid var(--primary-light);
+}
+
+.profile-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-name {
+    font-size: 1.25rem;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.profile-role {
+    color: var(--primary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.profile-divider {
+    border-top: 1px solid var(--background-dark);
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+.profile-meta {
+    font-size: 0.75rem;
+    color: var(--text-light);
+}
+
+.profile-github-btn {
+    display: flex;
+    background: var(--background);
+    color: var(--text-dark);
+    padding: 12px;
+    border-radius: 8px;
+    justify-content: center;
+    gap: 10px;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background 0.3s;
+
+    & svg {
+        height: 24px;
+        width: 24px;
+
+        & path {
+            fill: var(--primary);
+            stroke: var(--primary);
+        }
+    }
+}
+
+.profile-github-btn:hover {
+    background-color: var(--accent);
+}
+
+.flex-wrap-gap-60-mb-6 {
+    display: flex;
+    gap: 60px;
+    margin-bottom: 6rem;
+    flex-wrap: wrap;
+}
+
+.flex-1-min-w-300 {
+    flex: 1;
+    min-width: 300px;
+}
+
+.hero-title-bold {
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+}
+
+.hero-text-light {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.hero-text-light {
+    color: var(--text-light);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.hero-text-light-mb-0 {
+    color: var(--text-light);
+    font-size: 1.1rem;
+}
+
+.flex-1-max-w-550 {
+    flex: 1;
+    min-width: 350px;
+    max-width: 550px;
+}
+
+.mb-25 {
+    margin-bottom: 25px;
+}
+
+.w-100 {
+    width: 100%;
+}
