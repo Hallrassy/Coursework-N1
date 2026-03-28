@@ -63,6 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
                         <button class="btn-edit-mileage" style="font-size: 0.8rem; padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; background: transparent; cursor: pointer;">Редактировать пробег</button>
                     </div>
 
+                    <div class="card-details" style="margin-top: 15px; font-size: 0.9rem; color: var(--text-light); line-height: 1.4;">
+                        ${car.fullName ? `<p style="margin: 4px 0;"><strong>Владелец:</strong> ${car.fullName}</p>` : ''}
+                        ${car.phone ? `<p style="margin: 4px 0;"><strong>Телефон:</strong> ${car.phone}</p>` : ''}
+                        ${car.date ? `<p style="margin: 4px 0;"><strong>Дата записи:</strong> ${car.date.split('-').reverse().join('.')}</p>` : ''}
+                        ${car.serviceType ? `<p style="margin: 4px 0;"><strong>Тип:</strong> ${{routine:'Плановое ТО', repair:'Ремонт', diagnostics:'Диагностика'}[car.serviceType] || car.serviceType}</p>` : ''}
+                        ${car.notes ? `<p style="margin: 4px 0;"><strong>Заметки:</strong> ${car.notes}</p>` : ''}
+                    </div>
+
                     <div class="txt-xs-light-upper-mb-10" style="margin-top: 15px;">Статус:</div>
                     <div class="tags">
                         <span class="tag" style="background: ${car.status ? 'var(--accent)' : 'var(--background-dark)'}; color: ${car.status ? '#000' : 'var(--text-light)'}">

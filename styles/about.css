@@ -5,7 +5,6 @@
     background-color: var(--background-light);
     padding: 40px;
     border-radius: 16px;
-    box-shadow: 0 10px 30px var(--card-shadow);
 }
 
 .about-section h1 {
@@ -31,7 +30,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    color: var(--white);
     font-size: 2rem;
     font-weight: bold;
 }

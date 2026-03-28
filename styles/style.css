@@ -7,9 +7,9 @@
     --text-light: #522900;
     --text-dark: #000000;
 
-    --background: #e6e6e6;
+    --background: #d9d9d9;
+    --background-dark: #e6e6e6;
     --background-light: #ffffff;
-    --background-dark: #d9d9d9;
 
     --primary: #ff5757;
     --primary-light: #ff8585;
@@ -23,7 +23,11 @@
     --accent-light: #8dbd4f;
     --accent-dark: #5a7d32;
 
-    --card-shadow: rgba(0, 0, 0, 0.08);
+    --white: #ffffff;
+    --border-light: rgba(0, 0, 0, 0.1);
+    --border-light-hover: rgba(0, 0, 0, 0.05);
+    --primary-transparent: rgba(255, 87, 87, 0.1);
+    --primary-transparent-hover: rgba(255, 87, 87, 0.05);
 }
 
 /* Темная тема (через медиа-запрос) */
@@ -33,9 +37,9 @@
         --text-light: #ffffff;
         --text-dark: #d9caba;
 
-        --background: #0f0f0f;
-        --background-light: #262626;
-        --background-dark: #000000;
+        --background: #000000;
+        --background-light: #1a1a1a;
+        --background-dark: #0f0f0f;
 
         --primary: #a80000;
         --primary-light: #d40000;
@@ -49,7 +53,11 @@
         --accent-light: #abd37f;
         --accent-dark: #789c4f;
 
-        --card-shadow: rgba(0, 0, 0, 0.5);
+        --white: #ffffff;
+        --border-light: rgba(255, 255, 255, 0.1);
+        --border-light-hover: rgba(255, 255, 255, 0.05);
+        --primary-transparent: rgba(168, 0, 0, 0.2);
+        --primary-transparent-hover: rgba(168, 0, 0, 0.1);
     }
 }
 
@@ -57,9 +65,9 @@
     --text: #ffeddb;
     --text-light: #ffffff;
     --text-dark: #d9caba;
-    --background: #0f0f0f;
-    --background-light: #262626;
-    --background-dark: #000000;
+    --background: #000000;
+    --background-light: #1a1a1a;
+    --background-dark: #0f0f0f;
     --primary: #a80000;
     --primary-light: #d40000;
     --primary-dark: #7d0000;
@@ -69,7 +77,11 @@
     --accent: #94c062;
     --accent-light: #abd37f;
     --accent-dark: #789c4f;
-    --card-shadow: rgba(0, 0, 0, 0.5);
+    --white: #ffffff;
+    --border-light: rgba(255, 255, 255, 0.1);
+    --border-light-hover: rgba(255, 255, 255, 0.05);
+    --primary-transparent: rgba(168, 0, 0, 0.2);
+    --primary-transparent-hover: rgba(168, 0, 0, 0.1);
 }
 
 * {
@@ -164,13 +176,11 @@ nav a.active {
 
 .btn-primary {
     background-color: var(--primary);
-    color: #fff;
+    color: var(--white);
 }
 
 .btn-primary:hover {
-    background-color: var(--accent);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(255, 87, 87, 0.3);
+    background-color: var(--primary-dark);
 }
 
 .btn-outline {
@@ -185,7 +195,7 @@ nav a.active {
 }
 
 .theme-toggle {
-    background: var(--background-dark);
+    background-color: var(--secondary-dark);
     border: none;
     width: 40px;
     height: 40px;
@@ -194,22 +204,45 @@ nav a.active {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: var(--text);
-    transition: background-color 0.3s ease;
+    color: var(--white);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
 
-    & svg path {
-        fill: var(--primary);
-        stroke: var(--primary);
-    }
+.theme-toggle svg {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+}
+
+.theme-transitioning .theme-toggle svg {
+    transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+[data-theme="light"] .theme-toggle .icon-sun {
+    opacity: 0;
+    transform: translateY(20px) rotate(90deg);
+}
+
+[data-theme="light"] .theme-toggle .icon-moon {
+    opacity: 1;
+    transform: translateY(0) rotate(0);
+}
+
+[data-theme="dark"] .theme-toggle .icon-moon {
+    opacity: 0;
+    transform: translateY(-20px) rotate(-90deg);
+}
+
+[data-theme="dark"] .theme-toggle .icon-sun {
+    opacity: 1;
+    transform: translateY(0) rotate(0);
 }
 
 .theme-toggle:hover {
-    background-color: var(--background-light);
-
-    & svg path {
-        fill: var(--primary-dark);
-        stroke: var(--primary-dark);
-    }
+    background-color: var(--secondary);
+    color: var(--white);
 }
 
 /* Main Content Area */
@@ -223,7 +256,6 @@ main {
     background-color: var(--background-light);
     border-radius: 16px;
     padding: 30px;
-    box-shadow: 0 10px 30px var(--card-shadow);
 }
 
 .form-title {
@@ -279,7 +311,6 @@ select:focus,
 textarea:focus {
     outline: none;
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(255, 87, 87, 0.1);
 }
 
 input::placeholder,
@@ -325,21 +356,38 @@ footer {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: transparent;
-    border: 1px solid var(--text-light);
+    background-color: var(--primary);
+    border: 1px solid var(--primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text);
+    color: var(--white);
     text-decoration: none;
     transition: all 0.3s ease;
 }
 
 .social-links a:hover {
-    background-color: var(--primary);
-    border-color: var(--primary);
-    color: #fff;
-    transform: translateY(-3px);
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    color: var(--white);
+}
+
+.social-links a svg [fill="black"],
+.social-links a svg [fill="#000"],
+.social-links a svg [fill="#000000"],
+.theme-toggle svg [fill="black"],
+.theme-toggle svg [fill="#000"],
+.theme-toggle svg [fill="#000000"] {
+    fill: currentColor;
+}
+
+.social-links a svg [stroke="black"],
+.social-links a svg [stroke="#000"],
+.social-links a svg [stroke="#000000"],
+.theme-toggle svg [stroke="black"],
+.theme-toggle svg [stroke="#000"],
+.theme-toggle svg [stroke="#000000"] {
+    stroke: currentColor;
 }
 
 .footer-links h4 {
@@ -368,7 +416,7 @@ footer {
 
 .footer-bottom {
     padding-top: 20px;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: 1px solid var(--border-light);
     color: var(--text-light);
     font-size: 0.875rem;
 }

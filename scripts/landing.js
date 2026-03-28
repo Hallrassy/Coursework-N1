@@ -10,6 +10,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const brandInput = document.getElementById('brand');
             const modelInput = document.getElementById('model');
             const mileageInput = document.getElementById('mileage');
+            const fullNameInput = document.getElementById('fullName');
+            const phoneInput = document.getElementById('phone');
+            const dateInput = document.getElementById('date');
+            const serviceTypeInput = document.getElementById('serviceType');
+            const notesInput = document.getElementById('notes');
             
             if (!brandInput || !modelInput || !mileageInput) return;
             
@@ -24,6 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 brand: brand,
                 model: model,
                 mileage: parseInt(mileage, 10),
+                fullName: fullNameInput ? fullNameInput.value.trim() : '',
+                phone: phoneInput ? phoneInput.value.trim() : '',
+                date: dateInput ? dateInput.value.trim() : '',
+                serviceType: serviceTypeInput ? serviceTypeInput.value : '',
+                notes: notesInput ? notesInput.value.trim() : '',
                 status: false
             };
 

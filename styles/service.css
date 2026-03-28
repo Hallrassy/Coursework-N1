@@ -51,15 +51,11 @@
     background-color: var(--background-light);
     border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 5px 15px var(--card-shadow);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
 }
 
 .card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px var(--card-shadow);
 }
 
 .card-img {
@@ -83,7 +79,7 @@
     top: 10px;
     right: 10px;
     background: var(--primary);
-    color: #fff;
+    color: var(--white);
     padding: 4px 10px;
     border-radius: 12px;
     font-size: 0.75rem;
@@ -174,21 +170,20 @@
     text-align: center;
     padding: 40px 20px;
     cursor: pointer;
-    box-shadow: none;
     text-decoration: none;
     color: inherit;
 }
 
 .add-card:hover {
     border-color: var(--primary);
-    background-color: rgba(255, 87, 87, 0.05);
+    background-color: var(--primary-transparent-hover);
 }
 
 .add-icon {
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background-color: rgba(255, 87, 87, 0.1);
+    background-color: var(--primary-transparent);
     color: var(--primary);
     display: flex;
     align-items: center;
@@ -206,14 +201,13 @@
     background: var(--background-light);
     padding: 15px 25px;
     border-radius: 12px;
-    box-shadow: 0 5px 15px var(--card-shadow);
     display: flex;
     align-items: center;
     gap: 15px;
 }
 
 .icon-box-primary {
-    background: rgba(255, 87, 87, 0.1);
+    background: var(--primary-transparent);
     color: var(--primary);
     width: 40px;
     height: 40px;
