@@ -2,11 +2,11 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.querySelector('#register form');
-    
+
     if (registerForm) {
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            
+
             const brandInput = document.getElementById('brand');
             const modelInput = document.getElementById('model');
             const mileageInput = document.getElementById('mileage');
@@ -15,13 +15,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const dateInput = document.getElementById('date');
             const serviceTypeInput = document.getElementById('serviceType');
             const notesInput = document.getElementById('notes');
-            
+
             if (!brandInput || !modelInput || !mileageInput) return;
-            
+
             const brand = brandInput.value.trim();
             const model = modelInput.value.trim();
             const mileage = mileageInput.value.trim();
-            
+
             if (!brand || !model || !mileage) return;
 
             const newCar = {
@@ -39,10 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Get existing cars
             const cars = window.getData ? window.getData() : [];
-            
+
             // Add new car
             cars.push(newCar);
-            
+
             // Save to localStorage
             if (window.saveData) {
                 window.saveData(cars);
