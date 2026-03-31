@@ -85,8 +85,6 @@ h1 {
     overflow: hidden;
 }
 
-.step-card:hover {}
-
 .step-number {
     position: absolute;
     top: -20px;

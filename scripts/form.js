@@ -276,52 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'land cruiser': 'land cruiser 300', 'lc300': 'land cruiser 300', 'lc 300': 'land cruiser 300'
     };
 
-    // --- 2. ВСТРОЕННЫЕ УТИЛИТЫ ---
-    // Форматирование "toyota" -> "Toyota"
-    function formatTitle(str) {
-        if (!str) return '';
-        return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-    }
-
-    // Алгоритм Левенштейна (определение опечаток)
-    function getLevenshteinDistance(a, b) {
-        if (!a.length) return b.length;
-        if (!b.length) return a.length;
-        const matrix = Array(b.length + 1).fill(null).map(() => Array(a.length + 1).fill(null));
-        for (let i = 0; i <= a.length; i++) matrix[0][i] = i;
-        for (let j = 0; j <= b.length; j++) matrix[j][0] = j;
-        for (let j = 1; j <= b.length; j++) {
-            for (let i = 1; i <= a.length; i++) {
-                const indicator = a[i - 1] === b[j - 1] ? 0 : 1;
-                matrix[j][i] = Math.min(
-                    matrix[j][i - 1] + 1,
-                    matrix[j - 1][i] + 1,
-                    matrix[j - 1][i - 1] + indicator
-                );
-            }
-        }
-        return matrix[b.length][a.length];
-    }
-
-    // Поиск наиболее подходящего совпадения в объекте или массиве
-    function findBestMatch(input, collection) {
-        if (!input) return null;
-        let bestKey = null;
-        let minDistance = Infinity;
-        const keys = Array.isArray(collection) ? collection : Object.keys(collection);
-
-        for (let key of keys) {
-            if (key.includes(input) || input.includes(key)) return key;
-            const distance = getLevenshteinDistance(input, key);
-            let threshold = Math.max(1, Math.floor(Math.max(input.length, key.length) / 3));
-
-            if (distance <= threshold && distance < minDistance) {
-                minDistance = distance;
-                bestKey = key;
-            }
-        }
-        return bestKey;
-    }
+    // --- 2. ВСТРОЕННЫЕ УТИЛИТЫ (Удалены: используются глобальные из utils.js) ---
 
     // --- 3. ЛОГИКА ИНТЕРФЕЙСА (АВТОКОМПЛИТ И ФОРМА) ---
     const formPanel = document.querySelector('.form-panel form');

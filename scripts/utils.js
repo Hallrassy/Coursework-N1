@@ -3,7 +3,7 @@
 // Вспомогательная функция для красивого регистра текста
 function formatTitle(str) {
     if (!str) return '';
-    return String(str).split(' ').map(word => Math.max(word.length) > 0 ? word[0].toUpperCase() + word.substr(1) : '').join(' ');
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 }
 
 // Расстояние Левенштейна для умного поиска
@@ -53,7 +53,7 @@ function findBestMatch(input, collection) {
 
         // Иначе считаем расстояние Левенштейна
         const distance = getLevenshteinDistance(input, key);
-        
+
         // Допускаем опечатки (примерно 1-3 символа в зависимости от длины)
         let threshold = Math.floor(Math.max(input.length, key.length) / 3);
         if (threshold < 1) threshold = 1;

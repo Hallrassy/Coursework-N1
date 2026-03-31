@@ -20,10 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderCars(filterText = '') {
         const lowerFilter = filterText.toLowerCase();
-        
+
         let filteredCars = cars;
         if (lowerFilter) {
-            filteredCars = cars.filter(car => 
+            filteredCars = cars.filter(car =>
                 (car.brand && car.brand.toLowerCase().includes(lowerFilter)) ||
                 (car.model && car.model.toLowerCase().includes(lowerFilter))
             );
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         filteredCars.forEach(car => {
             const title = window.formatTitle ? (window.formatTitle(car.brand) + ' ' + window.formatTitle(car.model)) : (car.brand + ' ' + car.model);
-            
+
             html += `
             <div class="card" data-id="${car.id}">
                 <div class="card-img">
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${car.fullName ? `<p style="margin: 4px 0;"><strong>Владелец:</strong> ${car.fullName}</p>` : ''}
                         ${car.phone ? `<p style="margin: 4px 0;"><strong>Телефон:</strong> ${car.phone}</p>` : ''}
                         ${car.date ? `<p style="margin: 4px 0;"><strong>Дата записи:</strong> ${car.date.split('-').reverse().join('.')}</p>` : ''}
-                        ${car.serviceType ? `<p style="margin: 4px 0;"><strong>Тип:</strong> ${{routine:'Плановое ТО', repair:'Ремонт', diagnostics:'Диагностика'}[car.serviceType] || car.serviceType}</p>` : ''}
+                        ${car.serviceType ? `<p style="margin: 4px 0;"><strong>Тип:</strong> ${{ routine: 'Плановое ТО', repair: 'Ремонт', diagnostics: 'Диагностика' }[car.serviceType] || car.serviceType}</p>` : ''}
                         ${car.notes ? `<p style="margin: 4px 0;"><strong>Заметки:</strong> ${car.notes}</p>` : ''}
                     </div>
 
