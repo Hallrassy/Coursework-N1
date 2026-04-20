@@ -288,6 +288,54 @@ document.addEventListener('DOMContentLoaded', () => {
     const mileageInput = document.getElementById('mileage');
     const brandDropdown = document.getElementById('brand-dropdown');
     const modelDropdown = document.getElementById('model-dropdown');
+    const submitButton = formPanel.querySelector('button[type="submit"]');
+    const defaultListMarkup = `
+        <h3>Красивый список деталей</h3>
+        <p class="text-sm-light-mb-20">
+            Здесь появится список деталей, рекомендованных к замене по указанному пробегу.
+        </p>
+        <div class="empty-state">
+            <p>Список пока пуст.<br>Заполните форму слева для проверки.</p>
+        </div>
+    `;
+
+    let lastCheckedSignature = null;
+    let hasPendingChanges = false;
+
+    function normalizeModelAlias(modelValue) {
+        let normalizedModel = modelValue.trim().toLowerCase();
+
+        for (let alias in modelAliases) {
+            if (normalizedModel.includes(alias)) {
+                normalizedModel = modelAliases[alias];
+                break;
+            }
+        }
+
+        return normalizedModel;
+    }
+
+    function getCurrentFormSignature() {
+        return JSON.stringify({
+            brand: brandInput.value.trim().toLowerCase(),
+            model: normalizeModelAlias(modelInput.value),
+            mileage: mileageInput.value.trim()
+        });
+    }
+
+    function updateSubmitState() {
+        if (!submitButton) return;
+        submitButton.textContent = hasPendingChanges ? 'Обновить список' : 'Проверить';
+    }
+
+    function markFormAsChanged() {
+        hasPendingChanges = getCurrentFormSignature() !== lastCheckedSignature;
+        updateSubmitState();
+    }
+
+    function resetListPanel() {
+        listPanel.innerHTML = defaultListMarkup;
+    }
 
     // Отрисовка выпадающего списка
     function renderAutocomplete(inputEl, dropdownEl, optionsList) {
@@ -330,6 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (inputEl === brandInput) {
                         modelInput.value = '';
                     }
+                    markFormAsChanged();
                 });
                 dropdownEl.appendChild(div);
             });
@@ -362,20 +411,26 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!modelInput.contains(e.target) && !modelDropdown.contains(e.target)) modelDropdown.classList.remove('active');
     });
 
+    [brandInput, modelInput, mileageInput].forEach(input => {
+        input.addEventListener('input', markFormAsChanged);
+        input.addEventListener('change', markFormAsChanged);
+    });
+
     // --- 4. ОТПРАВКА ФОРМЫ (ГЕНЕРАЦИЯ СПИСКА ТО) ---
     formPanel.addEventListener('submit', (e) => {
         e.preventDefault();
 
         const brandVal = brandInput.value.trim().toLowerCase();
-        let modelVal = modelInput.value.trim().toLowerCase();
+        let modelVal = normalizeModelAlias(modelInput.value);
         const mileageVal = parseInt(mileageInput.value.trim(), 10);
+        const currentSignature = JSON.stringify({
+            brand: brandVal,
+            model: modelVal,
+            mileage: mileageInput.value.trim()
+        });
 
-        // Проверка на алиасы (например, l200 -> triton)
-        for (let alias in modelAliases) {
-            if (modelVal.includes(alias)) {
-                modelVal = modelAliases[alias];
-                break;
-            }
+        if (currentSignature === lastCheckedSignature && !hasPendingChanges) {
+            return;
         }
 
         let foundBrand = findBestMatch(brandVal, serviceData);
@@ -430,6 +485,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     `;
 
                     listPanel.innerHTML = html;
+                    lastCheckedSignature = currentSignature;
+                    hasPendingChanges = false;
+                    updateSubmitState();
                     return; // Успешный выход
                 }
             }
@@ -445,20 +503,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         `;
+        lastCheckedSignature = currentSignature;
+        hasPendingChanges = false;
+        updateSubmitState();
     });
 
     // Кнопка "Сбросить"
     formPanel.addEventListener('reset', () => {
-        listPanel.innerHTML = `
-            <h3>Красивый список деталей</h3>
-            <p class="text-sm-light-mb-20">
-                Здесь появится список деталей, рекомендованных к замене по указанному пробегу.
-            </p>
-            <div class="empty-state">
-                <p>Список пока пуст.<br>Заполните форму слева для проверки.</p>
-            </div>
-        `;
+        resetListPanel();
         brandDropdown.classList.remove('active');
         modelDropdown.classList.remove('active');
+        lastCheckedSignature = null;
+        hasPendingChanges = false;
+        updateSubmitState();
     });
+
+    updateSubmitState();
 });
