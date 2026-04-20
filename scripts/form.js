@@ -467,6 +467,29 @@ document.addEventListener('DOMContentLoaded', () => {
             if (foundModel) {
                 let schedules = serviceData[foundBrand][foundModel];
                 let bestSchedule = null;
+                let minSchedule = schedules.reduce((lowest, schedule) => {
+                    if (!lowest || schedule.mileage < lowest.mileage) {
+                        return schedule;
+                    }
+                    return lowest;
+                }, null);
+
+                if (minSchedule && mileageVal < minSchedule.mileage) {
+                    listPanel.innerHTML = `
+                        <div class="card" style="padding-top: 45px;">
+                            <h3 style="color: var(--black); margin-bottom: 10px;">ТО не требуется</h3>
+                            <div class="empty-state">
+                                <p style="color: var(--text);">Для автомобиля <strong>${brandInput.value} ${modelInput.value}</strong> на пробеге ${mileageVal} км техническое обслуживание пока не требуется.</p>
+                                <p style="color: var(--text); margin-top: 10px;">Первое ТО в базе начинается с <strong>${minSchedule.mileage.toLocaleString('ru-RU')} км</strong>.</p>
+                                ${getPhotoInfoMarkup()}
+                            </div>
+                        </div>
+                    `;
+                    lastCheckedSignature = currentSignature;
+                    hasPendingChanges = false;
+                    updateSubmitState();
+                    return;
+                }
 
                 // Подбор оптимального ТО под пробег
                 schedules.forEach(schedule => {
@@ -525,8 +548,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="card" style="padding-top: 45px;">
                 <h3 style="color: var(--primary); margin-bottom: 10px;">Результаты не найдены</h3>
                 <div class="empty-state">
-                    <p style="color: var(--text-dark);">Для автомобиля <strong>${brandInput.value} ${modelInput.value}</strong> на пробеге ${mileageVal} км в базе нет деталей.</p>
-                    <p style="color: var(--text-dark); margin-top: 10px;"><strong>Фото:</strong> ${normalizeOnlinePhotoUrl(photoUrlInput ? photoUrlInput.value : '') ? '<a href="' + normalizeOnlinePhotoUrl(photoUrlInput.value) + '" target="_blank" rel="noopener noreferrer">Открыть фотографию</a>' : 'Нету фотографии'}</p>
+                    <p style="color: var(--text);">Для автомобиля <strong>${brandInput.value} ${modelInput.value}</strong> на пробеге ${mileageVal} км в базе нет деталей.</p>
+                    <p style="color: var(--text); margin-top: 10px;"><strong>Фото:</strong> ${normalizeOnlinePhotoUrl(photoUrlInput ? photoUrlInput.value : '') ? '<a href="' + normalizeOnlinePhotoUrl(photoUrlInput.value) + '" target="_blank" rel="noopener noreferrer">Открыть фотографию</a>' : 'Нету фотографии'}</p>
                     <p style="font-size: 0.9em; margin-top: 10px;">Доступны: Mitsubishi (Outlander, L200, Pajero Sport) и Toyota (Camry, RAV4, Land Cruiser 300).</p>
                 </div>
             </div>
