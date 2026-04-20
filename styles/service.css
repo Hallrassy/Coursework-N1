@@ -88,6 +88,22 @@
     filter: grayscale(100%) contrast(1.2);
 }
 
+.card-img.no-photo img,
+.card-img img[hidden] {
+    display: none;
+}
+
+.card-no-photo {
+    padding: 20px;
+    text-align: center;
+    font-family: var(--font-pixel);
+    font-size: 1rem;
+    line-height: 1.6;
+    text-transform: uppercase;
+    color: var(--black);
+    word-break: break-word;
+}
+
 .card-img img:hover {
     filter: none;
 }

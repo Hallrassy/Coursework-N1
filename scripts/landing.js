@@ -3,6 +3,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     const registerForm = document.querySelector('#register form');
 
+    function normalizeOnlinePhotoUrl(value) {
+        const normalizedValue = value.trim();
+        return /^https?:\/\//i.test(normalizedValue) ? normalizedValue : '';
+    }
+
     if (registerForm) {
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -15,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const dateInput = document.getElementById('date');
             const serviceTypeInput = document.getElementById('serviceType');
             const notesInput = document.getElementById('notes');
+            const photoUrlInput = document.getElementById('photoUrl');
 
             if (!brandInput || !modelInput || !mileageInput) return;
 
@@ -34,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 date: dateInput ? dateInput.value.trim() : '',
                 serviceType: serviceTypeInput ? serviceTypeInput.value : '',
                 notes: notesInput ? notesInput.value.trim() : '',
+                photoUrl: photoUrlInput ? normalizeOnlinePhotoUrl(photoUrlInput.value) : '',
                 status: false
             };
 

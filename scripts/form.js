@@ -286,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const brandInput = document.getElementById('brand');
     const modelInput = document.getElementById('model');
     const mileageInput = document.getElementById('mileage');
+    const photoUrlInput = document.getElementById('photoUrl');
     const brandDropdown = document.getElementById('brand-dropdown');
     const modelDropdown = document.getElementById('model-dropdown');
     const submitButton = formPanel.querySelector('button[type="submit"]');
@@ -319,8 +320,32 @@ document.addEventListener('DOMContentLoaded', () => {
         return JSON.stringify({
             brand: brandInput.value.trim().toLowerCase(),
             model: normalizeModelAlias(modelInput.value),
-            mileage: mileageInput.value.trim()
+            mileage: mileageInput.value.trim(),
+            photoUrl: photoUrlInput ? photoUrlInput.value.trim() : ''
         });
+    }
+
+    function normalizeOnlinePhotoUrl(value) {
+        const normalizedValue = (value || '').trim();
+        return /^https?:\/\//i.test(normalizedValue) ? normalizedValue : '';
+    }
+
+    function getPhotoInfoMarkup() {
+        const photoUrl = normalizeOnlinePhotoUrl(photoUrlInput ? photoUrlInput.value : '');
+
+        if (!photoUrl) {
+            return `
+                <p style="font-family: var(--font-pixel); font-size: 0.75rem; margin-bottom: 20px; line-height: 1.5;">
+                    <strong>Фото:</strong> Нету фотографии
+                </p>
+            `;
+        }
+
+        return `
+            <p style="font-family: var(--font-pixel); font-size: 0.75rem; margin-bottom: 20px; line-height: 1.5;">
+                <strong>Фото:</strong> <a href="${photoUrl}" target="_blank" rel="noopener noreferrer">Открыть фотографию</a>
+            </p>
+        `;
     }
 
     function updateSubmitState() {
@@ -411,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!modelInput.contains(e.target) && !modelDropdown.contains(e.target)) modelDropdown.classList.remove('active');
     });
 
-    [brandInput, modelInput, mileageInput].forEach(input => {
+    [brandInput, modelInput, mileageInput, photoUrlInput].filter(Boolean).forEach(input => {
         input.addEventListener('input', markFormAsChanged);
         input.addEventListener('change', markFormAsChanged);
     });
@@ -426,7 +451,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentSignature = JSON.stringify({
             brand: brandVal,
             model: modelVal,
-            mileage: mileageInput.value.trim()
+            mileage: mileageInput.value.trim(),
+            photoUrl: photoUrlInput ? photoUrlInput.value.trim() : ''
         });
 
         if (currentSignature === lastCheckedSignature && !hasPendingChanges) {
@@ -460,6 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     let html = `
                         <h2 style="margin-bottom: 20px;">Детали для замены:<br>${formatTitle(foundBrand)} ${formatTitle(foundModel)}</h2>
                         <p style="font-family: var(--font-pixel); font-size: 0.8rem; margin-bottom: 20px; line-height: 1.4;">Рекомендовано для пробега:<br><strong>${bestSchedule.mileage.toLocaleString('ru-RU')} км (${bestSchedule.name})</strong></p>
+                        ${getPhotoInfoMarkup()}
                         <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
                     `;
 
@@ -499,6 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3 style="color: var(--primary); margin-bottom: 10px;">Результаты не найдены</h3>
                 <div class="empty-state">
                     <p style="color: var(--text-dark);">Для автомобиля <strong>${brandInput.value} ${modelInput.value}</strong> на пробеге ${mileageVal} км в базе нет деталей.</p>
+                    <p style="color: var(--text-dark); margin-top: 10px;"><strong>Фото:</strong> ${normalizeOnlinePhotoUrl(photoUrlInput ? photoUrlInput.value : '') ? '<a href="' + normalizeOnlinePhotoUrl(photoUrlInput.value) + '" target="_blank" rel="noopener noreferrer">Открыть фотографию</a>' : 'Нету фотографии'}</p>
                     <p style="font-size: 0.9em; margin-top: 10px;">Доступны: Mitsubishi (Outlander, L200, Pajero Sport) и Toyota (Camry, RAV4, Land Cruiser 300).</p>
                 </div>
             </div>

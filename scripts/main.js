@@ -7,15 +7,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let cars = window.getData() || [];
 
-    // Helper to get random image based on ID
-    function getCarImage(id) {
-        const images = [
-            'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&q=80&w=800',
-            'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fd?auto=format&fit=crop&q=80&w=800',
-            'https://images.unsplash.com/photo-1606152421802-db97b9c7a11b?auto=format&fit=crop&q=80&w=800',
-            'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&q=80&w=800'
-        ];
-        return images[id % images.length];
+    function normalizeOnlinePhotoUrl(value) {
+        const normalizedValue = (value || '').trim();
+        return /^https?:\/\//i.test(normalizedValue) ? normalizedValue : '';
+    }
+
+    function getPhotoBlock(car, title) {
+        const photoUrl = normalizeOnlinePhotoUrl(car.photoUrl);
+
+        if (!photoUrl) {
+            return `
+                <div class="card-no-photo">Нету фотографии</div>
+            `;
+        }
+
+        return `
+            <img src="${photoUrl}" alt="${title}" class="card-photo">
+            <div class="card-no-photo" hidden>Нету фотографии</div>
+        `;
+    }
+
+    function getPhotoMeta(car) {
+        const photoUrl = normalizeOnlinePhotoUrl(car.photoUrl);
+        if (!photoUrl) {
+            return '<p style="margin: 4px 0;"><strong>Фото:</strong> Нету фотографии</p>';
+        }
+
+        return `<p style="margin: 4px 0;"><strong>Фото:</strong> <a href="${photoUrl}" target="_blank" rel="noopener noreferrer">Открыть фотографию</a></p>`;
+    }
+
+    function attachPhotoFallbacks() {
+        document.querySelectorAll('.card-photo').forEach((img) => {
+            const showFallback = () => {
+                const wrapper = img.closest('.card-img');
+                const fallback = wrapper ? wrapper.querySelector('.card-no-photo') : null;
+
+                if (wrapper) {
+                    wrapper.classList.add('no-photo');
+                }
+
+                img.hidden = true;
+
+                if (fallback) {
+                    fallback.hidden = false;
+                }
+            };
+
+            img.addEventListener('error', showFallback);
+
+            if (img.complete && img.naturalWidth === 0) {
+                showFallback();
+            }
+        });
     }
 
     function renderCars(filterText = '') {
@@ -53,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             html += `
             <div class="card" data-id="${car.id}">
                 <div class="card-img">
-                    <img src="${getCarImage(car.id)}" alt="${title}">
+                    ${getPhotoBlock(car, title)}
                     <span class="card-due ${car.status ? 'success' : ''}">${car.status ? 'Обслужено' : 'Ждет ТО'}</span>
                 </div>
                 <div class="card-body">
@@ -69,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${car.date ? `<p style="margin: 4px 0;"><strong>Дата записи:</strong> ${car.date.split('-').reverse().join('.')}</p>` : ''}
                         ${car.serviceType ? `<p style="margin: 4px 0;"><strong>Тип:</strong> ${{ routine: 'Плановое ТО', repair: 'Ремонт', diagnostics: 'Диагностика' }[car.serviceType] || car.serviceType}</p>` : ''}
                         ${car.notes ? `<p style="margin: 4px 0;"><strong>Заметки:</strong> ${car.notes}</p>` : ''}
+                        ${getPhotoMeta(car)}
                     </div>
 
                     <div class="txt-xs-light-upper-mb-10" style="margin-top: 15px; font-weight: bold;">Статус:</div>
@@ -93,6 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
         html += addCardHtml;
         grid.innerHTML = html;
 
+        attachPhotoFallbacks();
         // Назначаем обработчики
         attachEvents();
     }
