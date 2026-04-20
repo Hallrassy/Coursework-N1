@@ -150,26 +150,10 @@
         .window.active:not(.minimized):not(.maximized) {
             opacity: 1;
             visibility: visible;
-            animation: glitch-anim 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
         }
         .window.active.maximized:not(.minimized) {
             opacity: 1;
             visibility: visible;
-            animation: glitch-anim-max 0.25s ease both;
-        }
-
-        @keyframes glitch-anim {
-            0% { filter: invert(1) hue-rotate(180deg); transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) skewX(20deg); }
-            20% { filter: invert(0); transform: translate(calc(-52% + var(--dx)), calc(-50% + var(--dy))) skewX(-20deg); }
-            40% { filter: invert(1); transform: translate(calc(-48% + var(--dx)), calc(-50% + var(--dy))) skewX(10deg); }
-            60% { filter: invert(0); transform: translate(calc(-50% + var(--dx)), calc(-48% + var(--dy))) skewX(-10deg); }
-            100% { filter: invert(0); transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) skewX(0deg); }
-        }
-        @keyframes glitch-anim-max {
-            0% { filter: invert(1) hue-rotate(180deg); }
-            30% { filter: invert(0); }
-            60% { filter: invert(1); }
-            100% { filter: invert(0); }
         }
 
         /* Title Bar */
@@ -852,11 +836,6 @@
 
                 windows.forEach((win, i) => {
                     if (i === index) {
-                        // Перезапуск CSS-анимации глитча (только если окно не свернуто и не развернуто на весь экран)
-                        if (!isMinimized && !isMaximized) {
-                            win.classList.remove('active');
-                            void win.offsetWidth; 
-                        }
                         win.classList.add('active');
                     } else {
                         win.classList.remove('active');
