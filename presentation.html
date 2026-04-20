@@ -716,7 +716,7 @@
 
     <div class="controls">
         <button class="btn" id="btn-prev" disabled>Назад</button>
-        <div class="counter"><span id="slide-counter">1 / 8</span></div>
+        <div class="counter"><span id="slide-counter">1 / 9</span></div>
         <button class="btn" id="btn-next">Вперед</button>
     </div>
 
@@ -727,10 +727,106 @@
             const btnNext = document.getElementById('btn-next');
             const counterText = document.getElementById('slide-counter');
             const desktopIcon = document.getElementById('desktop-icon');
+            const confettiCanvas = document.getElementById('confetti-canvas');
+            const confettiCtx = confettiCanvas.getContext('2d');
+            const lastSlideIndex = windows.length - 1;
             
             let currentSlide = 0;
+            let confettiParticles = [];
+            let confettiAnimationId = null;
+            let confettiEndTime = 0;
+
+            function resizeConfettiCanvas() {
+                const confettiHost = confettiCanvas.parentElement;
+                const rect = confettiHost.getBoundingClientRect();
+                confettiCanvas.width = rect.width;
+                confettiCanvas.height = rect.height;
+            }
+
+            function spawnConfettiBurst() {
+                const colors = ['#ff3333', '#000000', '#ffffff', '#ffd400', '#00c2ff'];
+                const burstCount = 18;
+                const originY = confettiCanvas.height * 0.22;
+                const emitters = [confettiCanvas.width * 0.2, confettiCanvas.width * 0.8];
+
+                emitters.forEach((originX, emitterIndex) => {
+                    for (let i = 0; i < burstCount; i++) {
+                        const direction = emitterIndex === 0 ? 1 : -1;
+                        confettiParticles.push({
+                            x: originX + (Math.random() - 0.5) * 26,
+                            y: originY + (Math.random() - 0.5) * 18,
+                            vx: direction * (3 + Math.random() * 4) + (Math.random() - 0.5) * 1.5,
+                            vy: -7 - Math.random() * 6,
+                            size: 5 + Math.random() * 7,
+                            rotation: Math.random() * Math.PI * 2,
+                            rotationSpeed: (Math.random() - 0.5) * 0.3,
+                            color: colors[Math.floor(Math.random() * colors.length)],
+                            shape: Math.random() > 0.5 ? 'rect' : 'circle'
+                        });
+                    }
+                });
+            }
+
+            function drawConfetti() {
+                confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+                confettiParticles = confettiParticles.filter((particle) => particle.y - particle.size < confettiCanvas.height + 40);
+
+                confettiParticles.forEach((particle) => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.vy += 0.18;
+                    particle.rotation += particle.rotationSpeed;
+
+                    confettiCtx.save();
+                    confettiCtx.translate(particle.x, particle.y);
+                    confettiCtx.rotate(particle.rotation);
+                    confettiCtx.fillStyle = particle.color;
+
+                    if (particle.shape === 'circle') {
+                        confettiCtx.beginPath();
+                        confettiCtx.arc(0, 0, particle.size * 0.45, 0, Math.PI * 2);
+                        confettiCtx.fill();
+                    } else {
+                        confettiCtx.fillRect(-particle.size / 2, -particle.size / 3, particle.size, particle.size * 0.66);
+                    }
+
+                    confettiCtx.restore();
+                });
+            }
+
+            function animateConfetti(now) {
+                if (now < confettiEndTime) {
+                    if (Math.random() < 0.45) {
+                        spawnConfettiBurst();
+                    }
+                }
+
+                drawConfetti();
+
+                if (now < confettiEndTime || confettiParticles.length > 0) {
+                    confettiAnimationId = requestAnimationFrame(animateConfetti);
+                } else {
+                    confettiAnimationId = null;
+                    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+                }
+            }
+
+            function triggerConfetti() {
+                resizeConfettiCanvas();
+                confettiParticles = [];
+                confettiEndTime = performance.now() + 2200;
+
+                if (confettiAnimationId !== null) {
+                    cancelAnimationFrame(confettiAnimationId);
+                }
+
+                spawnConfettiBurst();
+                confettiAnimationId = requestAnimationFrame(animateConfetti);
+            }
             
             function showSlide(index) {
+                const previousSlide = currentSlide;
                 // Запоминаем состояние текущего активного окна
                 const oldWin = document.querySelector('.window.active') || windows[0];
                 const newWin = windows[index];
@@ -773,20 +869,24 @@
                 counterText.innerText = (index + 1) + ' / ' + windows.length;
                 btnPrev.disabled = (index === 0);
                 btnNext.disabled = (index === windows.length - 1);
+
+                currentSlide = index;
+
+                if (index === lastSlideIndex && previousSlide !== lastSlideIndex) {
+                    triggerConfetti();
+                }
             }
             
             btnNext.addEventListener('click', () => {
                 if (currentSlide < windows.length - 1) {
-                    currentSlide++;
-                    showSlide(currentSlide);
+                    showSlide(currentSlide + 1);
                     playClickSound();
                 }
             });
             
             btnPrev.addEventListener('click', () => {
                 if (currentSlide > 0) {
-                    currentSlide--;
-                    showSlide(currentSlide);
+                    showSlide(currentSlide - 1);
                     playClickSound();
                 }
             });
@@ -815,6 +915,9 @@
                     win.style.height = '';
                     
                     win.classList.toggle('maximized');
+                    if (currentSlide === lastSlideIndex) {
+                        requestAnimationFrame(resizeConfettiCanvas);
+                    }
                     playClickSound();
                 });
             });
@@ -889,6 +992,10 @@
                 oscillator.start();
                 oscillator.stop(audioCtx.currentTime + 0.1);
             }
+
+            window.addEventListener('resize', resizeConfettiCanvas);
+            resizeConfettiCanvas();
+            counterText.innerText = '1 / ' + windows.length;
         });
     </script>
 </body>
