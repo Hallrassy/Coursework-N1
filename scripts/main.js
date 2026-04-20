@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="card-body">
                     <h3 class="card-title">${title}</h3>
                     <div class="card-meta" style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>${car.mileage.toLocaleString('ru-RU')} км</span>
-                        <button class="btn-edit-mileage" style="font-size: 0.8rem; padding: 4px 8px; border: 1px solid var(--border); border-radius: 4px; background: transparent; cursor: pointer;">Редактировать пробег</button>
+                        <span style="font-weight: bold; font-family: var(--font-pixel); font-size: 1.2rem;">${car.mileage.toLocaleString('ru-RU')} км</span>
+                        <button class="btn-edit-mileage" style="font-family: var(--font-pixel); font-size: 0.8rem; padding: 4px 8px; border: 3px solid var(--black); background: var(--white); cursor: pointer; text-transform: uppercase;">Правка пробега</button>
                     </div>
 
                     <div class="card-details" style="margin-top: 15px; font-size: 0.9rem; color: var(--text-light); line-height: 1.4;">
@@ -71,18 +71,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${car.notes ? `<p style="margin: 4px 0;"><strong>Заметки:</strong> ${car.notes}</p>` : ''}
                     </div>
 
-                    <div class="txt-xs-light-upper-mb-10" style="margin-top: 15px;">Статус:</div>
+                    <div class="txt-xs-light-upper-mb-10" style="margin-top: 15px; font-weight: bold;">Статус:</div>
                     <div class="tags">
-                        <span class="tag" style="background: ${car.status ? 'var(--accent)' : 'var(--background-dark)'}; color: ${car.status ? '#000' : 'var(--text-light)'}">
+                        <span class="tag" style="background: ${car.status ? 'var(--accent)' : 'var(--white)'}; color: var(--black); border: 2px solid var(--black); padding: 2px 8px; font-family: var(--font-pixel); text-transform: uppercase; display: inline-block;">
                             ${car.status ? 'В порядке' : 'Требует внимания'}
                         </span>
                     </div>
 
-                    <div class="card-footer" style="margin-top: 15px;">
-                        <label class="checkbox-label ${car.status ? 'txt-accent' : ''}">
-                            <input type="checkbox" class="status-checkbox" ${car.status ? 'checked' : ''}> Выполнено
+                    <div class="card-footer" style="margin-top: 15px; display: flex; justify-content: space-between; align-items: center; border-top: 3px dashed var(--black); padding-top: 15px;">
+                        <label class="checkbox-label" style="font-family: var(--font-pixel); font-weight: bold; text-transform: uppercase; cursor: pointer;">
+                            <input type="checkbox" class="status-checkbox" ${car.status ? 'checked' : ''} style="width: auto; margin-right: 10px; cursor: pointer;"> Выполнено
                         </label>
-                        <button class="icon-btn btn-delete" title="Удалить">
+                        <button class="icon-btn btn-delete" title="Удалить" style="background: var(--white); border: 3px solid var(--black); padding: 5px; cursor: pointer;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-2 14H7L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"></path></svg>
                         </button>
                     </div>

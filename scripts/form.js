@@ -403,27 +403,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     let totalMax = 0;
 
                     let html = `
-                        <h3>Детали для замены: ${formatTitle(foundBrand)} ${formatTitle(foundModel)}</h3>
-                        <p class="text-sm-light-mb-20">Рекомендовано для пробега: <strong>${bestSchedule.mileage.toLocaleString('ru-RU')} км (${bestSchedule.name})</strong></p>
-                        <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px;">
+                        <h2 style="margin-bottom: 20px;">Детали для замены:<br>${formatTitle(foundBrand)} ${formatTitle(foundModel)}</h2>
+                        <p style="font-family: var(--font-pixel); font-size: 0.8rem; margin-bottom: 20px; line-height: 1.4;">Рекомендовано для пробега:<br><strong>${bestSchedule.mileage.toLocaleString('ru-RU')} км (${bestSchedule.name})</strong></p>
+                        <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
                     `;
 
                     bestSchedule.parts.forEach(part => {
                         totalMin += part.min;
                         totalMax += part.max;
                         html += `
-                            <div style="background: var(--background); border: 1px solid var(--background-dark); padding: 15px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                                <strong style="color: var(--text-dark);">${part.name}</strong>
-                                <span style="color: var(--accent); font-weight: 700; white-space: nowrap;">${part.priceStr}</span>
+                            <div class="card" style="padding: 15px; padding-top: 45px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 0;">
+                                <strong style="font-size: 1rem; text-transform: uppercase;">${part.name}</strong>
+                                <span style="background: var(--primary); color: var(--white); padding: 5px 10px; font-family: var(--font-pixel); font-size: 0.7rem; border: 2px solid var(--black); box-shadow: 4px 4px 0 var(--black); font-weight: 700; white-space: nowrap;">${part.priceStr}</span>
                             </div>
                         `;
                     });
 
                     html += `
                         </div>
-                        <div style="background: var(--background-dark); padding: 20px; border-radius: 12px; margin-top: 20px;">
-                            <div style="font-size: 0.85rem; color: var(--text-light); text-transform: uppercase; margin-bottom: 5px; font-weight: bold;">Итоговая примерная стоимость:</div>
-                            <div style="font-size: 1.5rem; font-weight: 800; color: var(--text-dark);">
+                        <div class="card" style="background: var(--accent); border-color: var(--black); padding-top: 45px;">
+                            <div style="font-family: var(--font-pixel); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 10px; font-weight: bold; color: var(--black); line-height: 1.4;">Итоговая примерная стоимость:</div>
+                            <div style="font-size: 1.5rem; font-family: var(--font-pixel); font-weight: 800; color: var(--black); text-shadow: 2px 2px 0 var(--white);">
                                 ${totalMin.toLocaleString('ru-RU')} – ${totalMax.toLocaleString('ru-RU')} ₸
                             </div>
                         </div>
@@ -437,10 +437,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Если в БД не нашлось машины или деталей
         listPanel.innerHTML = `
-            <h3 style="color: var(--primary);">Результаты не найдены</h3>
-            <div class="empty-state">
-                <p style="color: var(--text-dark);">Для автомобиля <strong>${brandInput.value} ${modelInput.value}</strong> на пробеге ${mileageVal} км в базе нет деталей.</p>
-                <p style="font-size: 0.9em; margin-top: 10px;">Доступны: Mitsubishi (Outlander, L200, Pajero Sport) и Toyota (Camry, RAV4, Land Cruiser 300).</p>
+            <div class="card" style="padding-top: 45px;">
+                <h3 style="color: var(--primary); margin-bottom: 10px;">Результаты не найдены</h3>
+                <div class="empty-state">
+                    <p style="color: var(--text-dark);">Для автомобиля <strong>${brandInput.value} ${modelInput.value}</strong> на пробеге ${mileageVal} км в базе нет деталей.</p>
+                    <p style="font-size: 0.9em; margin-top: 10px;">Доступны: Mitsubishi (Outlander, L200, Pajero Sport) и Toyota (Camry, RAV4, Land Cruiser 300).</p>
+                </div>
             </div>
         `;
     });

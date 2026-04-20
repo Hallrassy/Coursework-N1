@@ -1,4 +1,4 @@
-/* Hero Section */
+/* Стили, специфичные для гаража / главной страницы */
 .hero {
     display: flex;
     justify-content: space-between;
@@ -7,9 +7,7 @@
 }
 
 @media (max-width: 768px) {
-    .hero {
-        flex-direction: column;
-    }
+    .hero { flex-direction: column; }
 }
 
 .hero-content {
@@ -19,37 +17,31 @@
 .badge {
     display: inline-block;
     padding: 6px 12px;
-    background-color: var(--primary-light);
+    background-color: var(--primary);
     color: var(--white);
-    border-radius: 20px;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    border: 2px solid var(--black);
     margin-bottom: 1rem;
-    opacity: 0.9;
-}
-
-h1 {
-    font-size: 3.5rem;
-    font-weight: 800;
-    line-height: 1.1;
-    color: var(--primary);
-    margin-bottom: 1.5rem;
+    font-family: var(--font-pixel);
 }
 
 .lead {
-    font-size: 1.125rem;
-    color: var(--text-light);
+    font-size: 1.2rem;
+    color: var(--text);
     margin-bottom: 2rem;
     max-width: 600px;
+    font-weight: bold;
 }
 
 /* How to Use Section */
 .how-to-section {
-    background-color: var(--background-dark);
+    background-color: var(--white);
     padding: 5rem 0;
     margin-bottom: 5rem;
+    border-top: 4px solid var(--black);
+    border-bottom: 4px solid var(--black);
 }
 
 .how-to-header {
@@ -57,16 +49,10 @@ h1 {
     max-width: 600px;
 }
 
-.how-to-header h2 {
-    font-size: 2.5rem;
-    font-weight: 800;
-    color: var(--primary);
-    margin-bottom: 1rem;
-}
-
 .how-to-header p {
-    font-size: 1.125rem;
-    color: var(--text-light);
+    font-size: 1.2rem;
+    color: var(--text);
+    font-weight: bold;
 }
 
 .how-to-grid {
@@ -78,8 +64,9 @@ h1 {
 .step-card {
     flex: 1 1 calc(33% - 20px);
     min-width: 280px;
-    background-color: var(--background-light);
-    border-radius: 12px;
+    background-color: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 12px 12px 0 var(--black);
     padding: 40px 30px;
     position: relative;
     overflow: hidden;
@@ -87,101 +74,58 @@ h1 {
 
 .step-number {
     position: absolute;
-    top: -20px;
-    right: 20px;
-    font-size: 6rem;
+    top: -10px;
+    right: 10px;
+    font-size: 5rem;
     font-weight: 800;
-    color: var(--background);
+    color: var(--secondary-light);
+    font-family: var(--font-pixel);
+    z-index: 0;
 }
 
 .step-icon {
     width: 50px;
     height: 50px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
-    & svg {
-        width: 50px;
-        height: 50px;
-    }
-
-    & svg path,
-    svg rect {
-        background-color: var(--primary-transparent);
-        fill: var(--primary);
-        stroke: var(--primary);
-    }
-}
-
-.step-card h3 {
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: var(--text-dark);
-    margin-bottom: 15px;
     position: relative;
-}
-
-.step-card p {
-    font-size: 0.95rem;
-    color: var(--text-light);
-    line-height: 1.6;
-    position: relative;
-}
-
-/* Forms */
-.form-container {
-    flex: 1;
-    background-color: var(--background-light);
-    border-radius: 16px;
-    padding: 30px;
-}
-
-.form-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 5px;
-    color: var(--primary);
-}
-
-.form-subtitle {
-    font-size: 0.875rem;
-    color: var(--text-light);
+    z-index: 1;
     margin-bottom: 20px;
 }
 
-.form-group {
+.step-icon svg { width: 50px; height: 50px; }
+.step-icon svg path, .step-icon svg rect {
+    fill: var(--black);
+    stroke: var(--black);
+}
+
+.step-card h3 {
+    font-size: 1.5rem;
+    color: var(--black);
     margin-bottom: 15px;
+    position: relative;
+    z-index: 1;
 }
 
-.form-row {
-    display: flex;
-    gap: 15px;
-}
-
-.form-row .form-group {
-    flex: 1;
+.step-card p {
+    font-size: 1rem;
+    color: var(--text);
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+    font-weight: bold;
 }
 
 /* Extracted Inline Styles */
-.flex-center-align {
-    align-items: center;
-}
-
-.mr-15 {
-    margin-right: 15px;
-}
-
-.flex-1-end {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-}
+.flex-center-align { align-items: center; }
+.mr-15 { margin-right: 15px; }
+.flex-1-end { flex: 1; display: flex; justify-content: flex-end; }
 
 .profile-card-cta {
-    background: var(--background-dark);
-    border-radius: 16px;
+    background: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 16px 16px 0 var(--black);
     padding: 40px 30px;
     text-align: center;
     max-width: 320px;
@@ -190,119 +134,182 @@ h1 {
 }
 
 .profile-avatar-wrapper {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    border-radius: 0;
     overflow: hidden;
     margin: 0 auto 15px;
-    border: 3px solid var(--primary-light);
+    border: 3px solid var(--black);
+    box-shadow: 8px 8px 0 var(--primary);
 }
 
 .profile-avatar-img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    filter: grayscale(100%) contrast(150%);
 }
 
 .profile-name {
-    font-size: 1.25rem;
-    color: var(--text-dark);
+    font-family: var(--font-pixel);
+    font-size: 1.5rem;
+    color: var(--black);
     margin-bottom: 5px;
+    text-transform: uppercase;
 }
 
 .profile-role {
     color: var(--primary);
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-family: var(--font-pixel);
+    font-size: 1rem;
     margin-bottom: 20px;
+    text-transform: uppercase;
 }
 
 .profile-divider {
-    border-top: 1px solid var(--background-dark);
+    border-top: 3px dashed var(--black);
     padding-top: 20px;
     margin-bottom: 20px;
 }
 
 .profile-meta {
-    font-size: 0.75rem;
-    color: var(--text-light);
+    font-size: 0.8rem;
+    color: var(--black);
+    font-weight: bold;
+    font-family: var(--font-pixel);
+    text-transform: uppercase;
 }
 
 .profile-github-btn {
     display: flex;
-    background: var(--primary);
-    color: var(--white);
+    background: var(--white);
+    color: var(--black);
     padding: 12px;
-    border-radius: 8px;
+    border: 3px solid var(--black);
+    box-shadow: 8px 8px 0 var(--black);
     justify-content: center;
     gap: 10px;
     text-decoration: none;
-    font-size: 1rem;
-    font-weight: 600;
-    transition: background 0.3s;
-
-    & svg {
-        height: 24px;
-        width: 24px;
-
-        & path {
-            fill: currentColor;
-            stroke: currentColor;
-        }
-    }
+    font-family: var(--font-pixel);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    transition: transform 0.1s, box-shadow 0.1s;
 }
+
+.profile-github-btn svg { width: 24px; height: 24px; }
+.profile-github-btn svg path { fill: var(--black); stroke: var(--black); }
 
 .profile-github-btn:hover {
-    background-color: var(--primary-dark);
+    background-color: var(--primary);
+    color: var(--white);
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--black);
 }
+.profile-github-btn:hover svg path { fill: var(--white); stroke: var(--white); }
 
-.flex-wrap-gap-60-mb-6 {
+.flex-wrap-gap-60-mb-6 { display: flex; gap: 60px; margin-bottom: 6rem; flex-wrap: wrap; }
+.flex-1-min-w-300 { flex: 1; min-width: 300px; }
+.flex-1-max-w-550 { flex: 1; min-width: 350px; max-width: 550px; }
+.mb-25 { margin-bottom: 25px; }
+.w-100 { width: 100%; }
+
+.dashboard-header {
     display: flex;
-    gap: 60px;
-    margin-bottom: 6rem;
-    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border: 3px solid var(--black);
+    padding: 20px;
+    background: var(--white);
+    box-shadow: 12px 12px 0 var(--black);
 }
 
-.flex-1-min-w-300 {
+.flex-center-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 20px;
+    background-color: var(--white);
+    border: 3px solid var(--black);
+}
+
+.icon-box-primary {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-xs-light-upper {
+    font-size: 0.8rem;
+    color: var(--black);
+    text-transform: uppercase;
+    font-family: var(--font-pixel);
+}
+
+.text-xl-bold {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--font-pixel);
+}
+
+.filters-bar {
+    display: flex;
+    gap: 15px;
+}
+.search-input {
     flex: 1;
-    min-width: 300px;
 }
 
-.hero-title-bold {
-    font-size: 3rem;
-    font-weight: 800;
-    line-height: 1.1;
-    color: var(--primary);
-    margin-bottom: 1.5rem;
+/* Стили для карточек машин в гараже */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
 }
 
-.hero-text-light {
-    color: var(--text-light);
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
+.add-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    color: var(--black);
+    border: 3px dashed var(--black);
+    box-shadow: none;
+    background-color: var(--background-dark);
 }
 
-.hero-text-light {
-    color: var(--text-light);
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
+.add-card:hover {
+    background-color: var(--white);
+    border-style: solid;
+    box-shadow: 6px 6px 0 var(--black);
 }
 
-.hero-text-light-mb-0 {
-    color: var(--text-light);
-    font-size: 1.1rem;
+.add-icon {
+    width: 60px;
+    height: 60px;
+    background-color: var(--primary);
+    border: 3px solid var(--black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    box-shadow: 4px 4px 0 var(--black);
 }
 
-.flex-1-max-w-550 {
-    flex: 1;
-    min-width: 350px;
-    max-width: 550px;
+.add-icon svg { width: 30px; height: 30px; stroke: var(--white); }
+
+.text-lg-bold-mb-10 {
+    font-family: var(--font-pixel);
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    text-transform: uppercase;
 }
 
-.mb-25 {
-    margin-bottom: 25px;
-}
-
-.w-100 {
-    width: 100%;
+.text-sm-light {
+    font-size: 0.9rem;
+    font-weight: bold;
 }

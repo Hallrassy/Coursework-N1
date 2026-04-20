@@ -1,89 +1,52 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=PT+Mono:wght@400;700&display=swap');
 
-/* Светлая тема (по умолчанию и через атрибут) */
-:root,
-:root[data-theme="light"] {
-    --text: #241200;
-    --text-light: #522900;
+/* Глобальные переменные в стиле Neo-Brutalism / Mac OS 1992 */
+:root {
+    --text: #000000;
+    --text-light: #444444;
     --text-dark: #000000;
 
-    --background: #d9d9d9;
-    --background-dark: #e6e6e6;
-    --background-light: #ffffff;
+    --background: #dcceb8;
+    --background-light: #e5dfc8;
+    --background-dark: #c7bdab;
 
-    --primary: #ff5757;
-    --primary-light: #ff8585;
-    --primary-dark: #d94a4a;
+    --primary: #cc4444;
+    /* Тусклый красный */
+    --primary-light: #e66666;
+    --primary-dark: #992222;
 
-    --secondary: #d5a47b;
-    --secondary-light: #e4c1a4;
-    --secondary-dark: #b58b68;
+    --secondary: #d5cbc5;
+    /* Тусклый серый для паттерна */
+    --secondary-light: #c0a0a0;
+    --secondary-dark: #a69993;
 
-    --accent: #719d3f;
-    --accent-light: #8dbd4f;
-    --accent-dark: #5a7d32;
+    --accent: #dcb336;
+    /* Тусклый желтый */
 
-    --white: #ffffff;
-    --border-light: rgba(0, 0, 0, 0.1);
-    --border-light-hover: rgba(0, 0, 0, 0.05);
-    --primary-transparent: rgba(255, 87, 87, 0.1);
-    --primary-transparent-hover: rgba(255, 87, 87, 0.05);
+    --white: #ecece8;
+    /* Тусклый бумажный белый */
+    --black: #111111;
+    /* Менее резкий черный */
+    --border-light: #222222;
+
+    --font-pixel: 'Press Start 2P', monospace;
+    --font-serif: 'PT Mono', monospace;
 }
 
-/* Темная тема (через медиа-запрос) */
-@media (prefers-color-scheme: dark) {
-    :root {
-        --text: #ffeddb;
-        --text-light: #ffffff;
-        --text-dark: #d9caba;
-
-        --background: #000000;
-        --background-light: #1a1a1a;
-        --background-dark: #0f0f0f;
-
-        --primary: #a80000;
-        --primary-light: #d40000;
-        --primary-dark: #7d0000;
-
-        --secondary: #84522a;
-        --secondary-light: #a66735;
-        --secondary-dark: #633e20;
-
-        --accent: #94c062;
-        --accent-light: #abd37f;
-        --accent-dark: #789c4f;
-
-        --white: #ffffff;
-        --border-light: rgba(255, 255, 255, 0.1);
-        --border-light-hover: rgba(255, 255, 255, 0.05);
-        --primary-transparent: rgba(168, 0, 0, 0.2);
-        --primary-transparent-hover: rgba(168, 0, 0, 0.1);
-    }
+[data-theme="dark"] {
+    --text: #dadada;
+    --text-light: #c6c6c6;
+    --text-dark: #010101;
+    --background: #222222;
+    --background-light: #333333;
+    --background-dark: #111111;
+    --white: #1a1a1a;
+    --black: #dadada;
+    --secondary: #444444;
+    --border-light: #ffffff;
 }
 
-:root[data-theme="dark"] {
-    --text: #ffeddb;
-    --text-light: #ffffff;
-    --text-dark: #d9caba;
-    --background: #000000;
-    --background-light: #1a1a1a;
-    --background-dark: #0f0f0f;
-    --primary: #a80000;
-    --primary-light: #d40000;
-    --primary-dark: #7d0000;
-    --secondary: #84522a;
-    --secondary-light: #a66735;
-    --secondary-dark: #633e20;
-    --accent: #94c062;
-    --accent-light: #abd37f;
-    --accent-dark: #789c4f;
-    --white: #ffffff;
-    --border-light: rgba(255, 255, 255, 0.1);
-    --border-light-hover: rgba(255, 255, 255, 0.05);
-    --primary-transparent: rgba(168, 0, 0, 0.2);
-    --primary-transparent-hover: rgba(168, 0, 0, 0.1);
-}
-
+/* Удаляем темную тему, форсируем брутализм */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -91,69 +54,135 @@
 }
 
 body {
-    font-family: 'Source Serif 4', serif;
+    font-family: var(--font-serif);
     color: var(--text);
     background-color: var(--background);
+    /* Паттерн "Шахматка" - классика Mac OS 1992 */
+    background-image:
+        linear-gradient(45deg, var(--secondary) 25%, transparent 25%),
+        linear-gradient(-45deg, var(--secondary) 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, var(--secondary) 75%),
+        linear-gradient(-45deg, transparent 75%, var(--secondary) 75%);
+    background-size: 4px 4px;
+    background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
     line-height: 1.6;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    cursor: crosshair;
+}
+
+/* Заголовки */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-pixel);
+    text-transform: uppercase;
+    color: var(--text);
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: 1.6rem;
+    text-shadow: 3px 3px 0px var(--primary);
+    margin-bottom: 1rem;
+    border-bottom: 4px solid var(--black);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+    line-height: 1.4;
+}
+
+h2 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.8rem;
+    line-height: 1.4;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 40px;
 }
 
 /* Header */
 header {
-    background-color: transparent;
-    padding: 20px 0;
-    margin-bottom: 2rem;
+    background-color: var(--white);
+    padding: 10px 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--black);
 }
 
 header .container {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: nowrap;
+    gap: 20px;
+    border: none;
+    box-shadow: none;
+    min-height: auto;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
+    font-family: var(--font-pixel);
     font-weight: 700;
-    font-size: 1.25rem;
-    color: var(--text-dark);
+    font-size: 1.1rem;
+    color: var(--black);
     text-decoration: none;
+    text-transform: uppercase;
 }
 
 .logo svg {
     width: 24px;
     height: 24px;
+    filter: drop-shadow(2px 2px 0 var(--primary));
+}
 
-    & path {
-        fill: var(--primary);
-        stroke: var(--primary);
-    }
+.logo svg path {
+    fill: var(--black);
+    stroke: var(--black);
 }
 
 nav {
     display: flex;
-    gap: 30px;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
 }
 
 nav a {
+    font-family: var(--font-pixel);
+    text-transform: uppercase;
     text-decoration: none;
-    color: var(--text);
-    font-weight: 500;
-    transition: color 0.3s ease;
+    color: var(--black);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    padding: 6px 10px;
+    border: 2px solid transparent;
+    white-space: nowrap;
+    line-height: 1;
+    transition: all 0.1s;
 }
 
 nav a:hover,
 nav a.active {
-    color: var(--primary);
+    background-color: var(--primary);
+    color: var(--white);
+    border: 2px solid var(--black);
+    box-shadow: 4px 4px 0 var(--black);
 }
 
 .header-actions {
@@ -162,16 +191,29 @@ nav a.active {
     gap: 15px;
 }
 
+/* Кнопки в стиле Neo-Brutalism */
 .btn {
     display: inline-block;
-    padding: 10px 24px;
-    border-radius: 8px;
-    font-weight: 600;
+    padding: 6px 16px;
+    font-family: var(--font-pixel);
+    /* PT Mono вместо пиксельного для читаемости */
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
     text-decoration: none;
     text-align: center;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border: none;
+    background-color: var(--white);
+    color: var(--black);
+    border: 2px solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.btn:active {
+    transform: translate(6px, 6px);
+    box-shadow: 0 0 0 var(--black);
 }
 
 .btn-primary {
@@ -181,102 +223,157 @@ nav a.active {
 
 .btn-primary:hover {
     background-color: var(--primary-dark);
+    color: var(--white);
 }
 
 .btn-outline {
-    background-color: transparent;
-    border: 1px solid var(--text-light);
-    color: var(--text);
+    background-color: var(--white);
 }
 
 .btn-outline:hover {
-    border-color: var(--primary);
-    color: var(--primary);
+    background-color: var(--accent);
 }
 
+/* Переключатель тем */
 .theme-toggle {
-    background-color: var(--secondary-dark);
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: var(--white);
+    border: 2px solid var(--black);
+    box-shadow: 4px 4px 0 var(--black);
     cursor: pointer;
-    color: var(--white);
-    transition: background-color 0.3s ease, color 0.3s ease;
-    position: relative;
+    transition: all 0.1s;
+    padding: 0;
     overflow: hidden;
+    position: relative;
 }
 
-.theme-toggle svg {
+.theme-toggle:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--black);
+}
+
+/* Иконки темы */
+.theme-toggle .icon-sun,
+.theme-toggle .icon-moon {
     position: absolute;
-    top: 8px;
-    left: 8px;
+    transition: opacity 0.2s ease, transform 0.3s ease;
 }
 
-.theme-transitioning .theme-toggle svg {
-    transition: transform 0.5s ease, opacity 0.5s ease;
-}
-
-[data-theme="light"] .theme-toggle .icon-sun {
-    opacity: 0;
-    transform: translateY(20px) rotate(90deg);
-}
-
-[data-theme="light"] .theme-toggle .icon-moon {
+/* Светлая тема: показываем солнце, прячем луну */
+.theme-toggle .icon-sun {
     opacity: 1;
-    transform: translateY(0) rotate(0);
+    transform: rotate(0deg) scale(1);
+}
+
+.theme-toggle .icon-moon {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.5);
+}
+
+/* Тёмная тема: показываем луну, прячем солнце */
+[data-theme="dark"] .theme-toggle .icon-sun {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.5);
 }
 
 [data-theme="dark"] .theme-toggle .icon-moon {
-    opacity: 0;
-    transform: translateY(-20px) rotate(-90deg);
-}
-
-[data-theme="dark"] .theme-toggle .icon-sun {
     opacity: 1;
-    transform: translateY(0) rotate(0);
+    transform: rotate(0deg) scale(1);
 }
 
-.theme-toggle:hover {
-    background-color: var(--secondary);
-    color: var(--white);
+/* Цвет SVG под тему */
+.theme-toggle .icon-sun path,
+.theme-toggle .icon-moon path {
+    fill: var(--black);
+    stroke: var(--black);
 }
 
 /* Main Content Area */
 main {
     flex: 1;
+    padding-bottom: 40px;
 }
 
-/* Forms */
+/* Карточки в стиле окон */
+.card,
 .form-container {
-    flex: 1;
-    background-color: var(--background-light);
-    border-radius: 16px;
-    padding: 30px;
+    background-color: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 16px 16px 0 var(--black);
+    padding: 20px;
+    padding-top: 52px;
+    /* For the title bar */
+    margin-bottom: 20px;
+    position: relative;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+/* Mac OS 1992 Title Bar Simulation */
+.card::before,
+.form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 32px;
+    background-color: var(--white);
+    border-bottom: 3px solid var(--black);
+    z-index: 1;
+}
+
+.card::after,
+.form-container::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 36px;
+    right: 36px;
+    height: 24px;
+    background: repeating-linear-gradient(to bottom,
+            var(--black),
+            var(--black) 2px,
+            var(--white) 2px,
+            var(--white) 4px);
+    z-index: 2;
+}
+
+.card:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 20px 20px 0 var(--black);
 }
 
 .form-title {
-    font-size: 1.5rem;
+    font-family: var(--font-pixel);
+    font-size: 1.2rem;
     font-weight: 700;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    background: var(--black);
+    color: var(--white);
+    display: inline-block;
+    padding: 5px 15px;
+    line-height: 1.4;
 }
 
 .form-subtitle {
-    font-size: 0.875rem;
+    font-size: 1rem;
     color: var(--text-light);
     margin-bottom: 20px;
+    font-weight: bold;
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 
 .form-row {
     display: flex;
-    gap: 15px;
+    gap: 20px;
 }
 
 .form-row .form-group {
@@ -284,48 +381,57 @@ main {
 }
 
 label {
-    display: block;
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin-bottom: 5px;
-    color: var(--text-dark);
+    display: inline-block;
+    font-family: var(--font-pixel);
+    /* PT Mono — читаемо на любом размере */
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--black);
+    color: var(--white);
+    padding: 4px 12px;
+    margin-bottom: 10px;
+    line-height: 1.5;
 }
 
+/* Инпуты как терминальные строки */
 input,
 select,
 textarea {
     width: 100%;
-    padding: 12px 15px;
-    border: 1px solid var(--background-dark);
-    background-color: var(--background);
-    border-radius: 8px;
-    font-size: 0.95rem;
+    padding: 15px 20px;
+    border: 3px solid var(--black);
+    background-color: var(--white);
+    border-radius: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
     color: var(--text);
     resize: none;
-    transition: all 0.3s ease;
-    font-family: inherit;
+    font-family: var(--font-serif);
+    transition: all 0.1s;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
     outline: none;
-    border-color: var(--primary);
+    background-color: var(--accent);
+    box-shadow: 6px 6px 0 var(--black);
+    transform: translate(-2px, -2px);
 }
 
 input::placeholder,
 textarea::placeholder {
-    color: var(--text-light);
-    opacity: 0.6;
+    color: var(--secondary-dark);
 }
 
 /* Footer */
 footer {
-    background-color: var(--background-dark);
-    padding: 60px 0 30px;
+    background-color: var(--white);
+    padding: 40px 0 20px;
     margin-top: auto;
-    border-top-left-radius: 40px;
-    border-top-right-radius: 40px;
+    border-top: 4px solid var(--black);
 }
 
 .footer-grid {
@@ -342,9 +448,10 @@ footer {
 }
 
 .footer-brand p {
-    color: var(--text-light);
+    color: var(--text);
     margin: 20px 0;
     max-width: 300px;
+    font-weight: bold;
 }
 
 .social-links {
@@ -353,47 +460,34 @@ footer {
 }
 
 .social-links a {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--primary);
-    border: 1px solid var(--primary);
+    width: 50px;
+    height: 50px;
+    background-color: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 4px 4px 0 var(--black);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--white);
-    text-decoration: none;
-    transition: all 0.3s ease;
+    transition: transform 0.1s;
 }
 
 .social-links a:hover {
-    background-color: var(--primary-dark);
-    border-color: var(--primary-dark);
-    color: var(--white);
+    background-color: var(--primary);
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--black);
 }
 
-.social-links a svg [fill="black"],
-.social-links a svg [fill="#000"],
-.social-links a svg [fill="#000000"],
-.theme-toggle svg [fill="black"],
-.theme-toggle svg [fill="#000"],
-.theme-toggle svg [fill="#000000"] {
-    fill: currentColor;
-}
-
-.social-links a svg [stroke="black"],
-.social-links a svg [stroke="#000"],
-.social-links a svg [stroke="#000000"],
-.theme-toggle svg [stroke="black"],
-.theme-toggle svg [stroke="#000"],
-.theme-toggle svg [stroke="#000000"] {
-    stroke: currentColor;
+.social-links a svg path {
+    fill: var(--black) !important;
+    stroke: none;
 }
 
 .footer-links h4 {
-    font-size: 1.125rem;
+    font-family: var(--font-pixel);
+    font-size: 1.5rem;
     margin-bottom: 20px;
-    color: var(--text-dark);
+    color: var(--black);
+    text-transform: uppercase;
 }
 
 .footer-links ul {
@@ -406,19 +500,25 @@ footer {
 
 .footer-links a {
     text-decoration: none;
-    color: var(--text-light);
-    transition: color 0.3s ease;
+    color: var(--black);
+    font-weight: bold;
+    border-bottom: 2px solid transparent;
 }
 
 .footer-links a:hover {
-    color: var(--primary);
+    background-color: var(--black);
+    color: var(--white);
 }
 
 .footer-bottom {
     padding-top: 20px;
-    border-top: 1px solid var(--border-light);
-    color: var(--text-light);
-    font-size: 0.875rem;
+    border-top: 4px solid var(--black);
+    color: var(--text);
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    font-family: var(--font-pixel);
+    text-transform: uppercase;
 }
 
 /* ======================== */
@@ -429,40 +529,25 @@ footer {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 5px;
-    width: 40px;
-    height: 40px;
-    background: transparent;
-    border: none;
+    gap: 6px;
+    width: 44px;
+    height: 44px;
+    background: var(--white);
+    border: 3px solid var(--black);
+    box-shadow: 4px 4px 0 var(--black);
     cursor: pointer;
     padding: 0;
     z-index: 1100;
-    position: relative;
 }
 
 .burger-toggle span {
     display: block;
     width: 24px;
-    height: 2px;
-    background-color: var(--text);
-    border-radius: 2px;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    height: 3px;
+    background-color: var(--black);
+    transition: transform 0.1s;
 }
 
-/* Анимация крестика при .active */
-.burger-toggle.active span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
-}
-
-.burger-toggle.active span:nth-child(2) {
-    opacity: 0;
-}
-
-.burger-toggle.active span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
-}
-
-/* Overlay */
 .nav-overlay {
     display: none;
     position: fixed;
@@ -470,46 +555,47 @@ footer {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.8);
     z-index: 999;
-    opacity: 0;
-    transition: opacity 0.3s ease;
 }
 
 .nav-overlay.active {
     display: block;
-    opacity: 1;
 }
 
 /* ======================== */
 /* Мобильная адаптивность   */
 /* ======================== */
 @media (max-width: 768px) {
-    /* Показать бургер-кнопку */
     .burger-toggle {
         display: flex;
     }
 
-    /* Скрыть CTA-кнопку "Записаться" в шапке на мобильном */
     .header-actions .btn {
         display: none;
     }
 
-    /* Мобильная навигация — выезжает справа */
+    .container {
+        border-left: none;
+        border-right: none;
+        box-shadow: none;
+    }
+
     nav {
         position: fixed;
         top: 0;
         right: 0;
-        width: 280px;
+        width: 300px;
         height: 100vh;
-        background-color: var(--background-light);
+        background-color: var(--white);
+        border-left: 4px solid var(--black);
         flex-direction: column;
-        gap: 0;
-        padding: 80px 30px 30px;
+        gap: 20px;
+        padding: 100px 30px 30px;
         transform: translateX(100%);
         transition: transform 0.3s ease;
         z-index: 1000;
-        box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
+        box-shadow: -10px 0 0 rgba(0, 0, 0, 0.2);
     }
 
     nav.active {
@@ -517,28 +603,75 @@ footer {
     }
 
     nav a {
-        padding: 15px 0;
-        font-size: 1.1rem;
-        border-bottom: 1px solid var(--border-light);
+        font-size: 1.5rem;
+        border: 3px solid var(--black);
+        text-align: center;
     }
 
-    nav a:last-child {
-        border-bottom: none;
-    }
-
-    /* Предотвращение скролла при открытом меню */
     body.menu-open {
         overflow: hidden;
     }
 
-    /* Адаптивность заголовков */
     h1 {
         font-size: 2rem;
     }
 
-    /* Форм-ряды — в колонку на мобильном */
     .form-row {
         flex-direction: column;
         gap: 0;
     }
+}
+
+/* Selection */
+::selection {
+    background: var(--black);
+    color: var(--white);
+}
+
+/* Бегущая строка (Awwwards style) */
+.marquee-bg {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    width: 100vw;
+    transform: translateY(-50%) rotate(-5deg);
+    overflow: hidden;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0.1;
+}
+
+.marquee-track {
+    display: inline-block;
+    white-space: nowrap;
+    font-family: var(--font-pixel);
+    font-size: 8rem;
+    font-weight: bold;
+    color: var(--black);
+    text-transform: uppercase;
+    animation: marquee-scroll 20s linear infinite;
+}
+
+@keyframes marquee-scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+/* CRT Оверлей (создается через retro-fx.js) */
+.crt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+    background-size: 100% 4px;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.4;
 }

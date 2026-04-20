@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Презентация: System 7 / Awwwards</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;700&family=Source+Serif+4:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #000000;
+            --white: #ffffff;
+            --red: #ff3333;
+            --gray: #aaaaaa;
+            --font-pixel: 'Pixelify Sans', monospace;
+            --font-serif: 'Source Serif 4', serif;
+        }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: var(--white);
+            background-image: 
+                linear-gradient(45deg, var(--gray) 25%, transparent 25%), 
+                linear-gradient(-45deg, var(--gray) 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, var(--gray) 75%), 
+                linear-gradient(-45deg, transparent 75%, var(--gray) 75%);
+            background-size: 4px 4px;
+            background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+            font-family: var(--font-pixel);
+            color: var(--black);
+            height: 100vh;
+            cursor: crosshair;
+        }
+
+        .crt-overlay {
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        .marquee {
+            position: fixed;
+            top: 50%;
+            left: -50%;
+            transform: translateY(-50%) rotate(-5deg);
+            width: 200vw;
+            white-space: nowrap;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.15;
+            mix-blend-mode: multiply;
+        }
+        .marquee span {
+            font-size: 12vw;
+            font-weight: 700;
+            text-transform: uppercase;
+            animation: scroll 30s linear infinite;
+            display: inline-block;
+        }
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Иконка на рабочем столе для восстановления свернутого окна */
+        .desktop-icon {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            width: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            z-index: 50;
+            text-align: center;
+            transition: transform 0.1s;
+        }
+        .desktop-icon:hover {
+            transform: scale(1.1);
+        }
+        .icon-img {
+            font-size: 50px;
+            margin-bottom: 8px;
+            text-shadow: 4px 4px 0px var(--black);
+            line-height: 1;
+        }
+        .icon-text {
+            background: var(--white);
+            border: 2px solid var(--black);
+            padding: 2px 6px;
+            font-family: var(--font-pixel);
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 2px 2px 0px var(--black);
+        }
+
+        /* Окно с возможностью изменения размера */
+        .window {
+            --dx: 0px;
+            --dy: 0px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy)));
+            width: 900px;
+            height: 540px;
+            min-width: 400px;
+            min-height: 300px;
+            max-width: 100vw;
+            max-height: 100vh;
+            background: var(--white);
+            border: 3px solid var(--black);
+            box-shadow: 20px 20px 0px var(--black);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+            opacity: 0;
+            visibility: hidden;
+            resize: both; /* Встроенная фишка для ресайза за правый нижний угол */
+            overflow: hidden;
+            transition: width 0.3s, height 0.3s;
+        }
+
+        /* Состояния окон */
+        .window.maximized {
+            width: 100vw !important;
+            height: 100vh !important;
+            top: 0 !important;
+            left: 0 !important;
+            transform: none !important;
+            box-shadow: none !important;
+            border: none !important;
+            resize: none !important;
+        }
+
+        .window.minimized {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.1) !important;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+        }
+
+        .window.active:not(.minimized):not(.maximized) {
+            opacity: 1;
+            visibility: visible;
+            animation: glitch-anim 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+        .window.active.maximized:not(.minimized) {
+            opacity: 1;
+            visibility: visible;
+            animation: glitch-anim-max 0.25s ease both;
+        }
+
+        @keyframes glitch-anim {
+            0% { filter: invert(1) hue-rotate(180deg); transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) skewX(20deg); }
+            20% { filter: invert(0); transform: translate(calc(-52% + var(--dx)), calc(-50% + var(--dy))) skewX(-20deg); }
+            40% { filter: invert(1); transform: translate(calc(-48% + var(--dx)), calc(-50% + var(--dy))) skewX(10deg); }
+            60% { filter: invert(0); transform: translate(calc(-50% + var(--dx)), calc(-48% + var(--dy))) skewX(-10deg); }
+            100% { filter: invert(0); transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) skewX(0deg); }
+        }
+        @keyframes glitch-anim-max {
+            0% { filter: invert(1) hue-rotate(180deg); }
+            30% { filter: invert(0); }
+            60% { filter: invert(1); }
+            100% { filter: invert(0); }
+        }
+
+        /* Title Bar */
+        .title-bar {
+            height: 32px;
+            flex-shrink: 0;
+            background: var(--white);
+            border-bottom: 3px solid var(--black);
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Кнопки по краям */
+            padding: 0 8px;
+            position: relative;
+            cursor: grab;
+        }
+        .title-bar:active { cursor: grabbing; }
+        
+        .stripes {
+            position: absolute;
+            top: 4px; left: 36px; right: 36px; bottom: 4px;
+            background: repeating-linear-gradient(
+                to bottom,
+                var(--black),
+                var(--black) 2px,
+                var(--white) 2px,
+                var(--white) 4px
+            );
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .close-box, .zoom-box {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--black);
+            background: var(--white);
+            z-index: 2;
+            position: relative;
+            box-shadow: inset 1px 1px 0px var(--white), inset -1px -1px 0px var(--black);
+            cursor: pointer;
+        }
+
+        .close-box:hover { background: var(--red); }
+        .zoom-box:hover { background: #55ff55; }
+
+        /* Иконка внутри zoom-box */
+        .zoom-box::after {
+            content: '';
+            position: absolute;
+            top: 3px; left: 3px; right: 3px; bottom: 3px;
+            border: 1px solid var(--black);
+        }
+
+        .title-text {
+            background: var(--white);
+            padding: 0 15px;
+            font-weight: 700;
+            font-size: 20px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            border: 2px solid var(--white);
+            pointer-events: none;
+        }
+
+        /* Контентная часть */
+        .content {
+            flex: 1;
+            padding: 50px 80px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 72px;
+            text-transform: uppercase;
+            margin: 0 0 20px 0;
+            text-shadow: 6px 6px 0px var(--red);
+            line-height: 1.1;
+            letter-spacing: -2px;
+        }
+        h2 {
+            font-size: 44px;
+            border-bottom: 4px solid var(--black);
+            padding-bottom: 6px;
+            margin-top: 0;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        p, li {
+            font-family: var(--font-serif);
+            font-size: 22px;
+            line-height: 1.6;
+            font-weight: 700;
+        }
+        ul {
+            list-style-type: square;
+            padding-left: 24px;
+        }
+        li::marker {
+            color: var(--red);
+            font-size: 24px;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+
+        .card {
+            border: 3px solid var(--black);
+            padding: 20px;
+            background: var(--white);
+            box-shadow: 12px 12px 0px var(--black);
+            margin-bottom: 20px;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0px var(--black);
+            background: #fffafa;
+        }
+        .card h3 {
+            font-family: var(--font-pixel);
+            margin-top: 0;
+            font-size: 26px;
+            text-transform: uppercase;
+            color: var(--red);
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 100%;
+            min-height: 250px;
+            border: 3px solid var(--black);
+            background: repeating-conic-gradient(var(--gray) 0% 25%, var(--white) 0% 50%) 50% / 20px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-pixel);
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 0px var(--white);
+            position: relative;
+            box-shadow: inset 5px 5px 0px rgba(0,0,0,0.1);
+        }
+        .img-placeholder::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            box-shadow: inset 0 0 0 2px var(--black);
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+        }
+        
+        .btn {
+            font-family: var(--font-pixel);
+            font-size: 22px;
+            text-transform: uppercase;
+            padding: 10px 24px;
+            background: var(--white);
+            border: 3px solid var(--black);
+            box-shadow: 12px 12px 0px var(--black);
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+        .btn:active:not(:disabled) {
+            transform: translate(6px, 6px);
+            box-shadow: 0px 0px 0px var(--black);
+        }
+        .btn:hover:not(:disabled) {
+            background: var(--red);
+            color: var(--white);
+        }
+        .btn:disabled {
+            background: #dddddd;
+            color: #888888;
+            cursor: not-allowed;
+            box-shadow: 6px 6px 0px #888888;
+            border-color: #888888;
+        }
+
+        .counter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--white);
+            border: 3px solid var(--black);
+            padding: 0 20px;
+            font-weight: bold;
+            font-size: 24px;
+            box-shadow: 6px 6px 0px var(--black);
+        }
+
+        ::selection {
+            background: var(--black);
+            color: var(--white);
+        }
+        
+        /* Уголок для ресайза */
+        .window::-webkit-resizer {
+            background-color: var(--black);
+            border: 2px solid var(--white);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="crt-overlay"></div>
+
+    <div class="marquee">
+        <span>SYSTEM 7.0 / COURSEWORK DEFENSE / NEO-BRUTALISM / MAC OS 1992 / </span>
+        <span>SYSTEM 7.0 / COURSEWORK DEFENSE / NEO-BRUTALISM / MAC OS 1992 / </span>
+    </div>
+
+    <!-- Иконка на рабочем столе для восстановления окна -->
+    <div class="desktop-icon" id="desktop-icon" style="display: none;" title="Дважды кликните, чтобы восстановить">
+        <div class="icon-img">💾</div>
+        <div class="icon-text">Presentation</div>
+    </div>
+
+    <!-- Слайд 1: Титульный -->
+    <div class="window active maximized">
+        <div class="title-bar">
+            <div class="close-box" title="Скрыть окно"></div>
+            <div class="stripes"></div>
+            <div class="title-text">Start.exe</div>
+            <div class="zoom-box" title="Развернуть"></div>
+        </div>
+        <div class="content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+            <div style="background: var(--black); color: var(--white); padding: 5px 20px; font-size: 26px; margin-bottom: 20px; text-transform: uppercase;">Система Защиты v1.0</div>
+            <h1>Бортовой Журнал<br>Автомобиля</h1>
+            <p style="font-family: var(--font-pixel); font-size: 28px; margin-top: 40px; margin-bottom: 5px;">USER: Гальберг Михаил Евгеньевич</p>
+            <p style="font-family: var(--font-pixel); font-size: 24px; color: var(--red);">GROUP: 12 ТИС/24</p>
+        </div>
+    </div>
+
+    <!-- Слайд 2 -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box" title="Скрыть окно"></div>
+            <div class="stripes"></div>
+            <div class="title-text">Problem.doc</div>
+            <div class="zoom-box" title="Развернуть"></div>
+        </div>
+        <div class="content" style="display: flex; flex-direction: column;">
+            <h2>В чем проблема?</h2>
+            <div class="grid-2" style="align-items: stretch; flex: 1;">
+                <div style="display: flex; flex-direction: column; justify-content: center; gap: 0;">
+                    <ul>
+                        <li><strong>Машин всё больше:</strong> нужно следить.</li>
+                        <li><strong>Бумажки устарели:</strong> теряются, рвутся.</li>
+                        <li><strong>Аналоги перегружены:</strong> сложная регистрация.</li>
+                    </ul>
+                    <div class="card" style="margin-top: 40px; border-color: var(--red); background: var(--black); color: var(--white); border-width: 4px;">
+                        <h3 style="color: var(--white); font-size: 30px;">Идея:</h3>
+                        <p style="font-family: var(--font-pixel); margin:0; font-size: 22px; color: var(--white); line-height: 1.8;">Простой сайт в браузере<br>без лишних действий.</p>
+                    </div>
+                </div>
+                <div style="border: 3px solid var(--black); display: flex; flex-direction: column; padding: 30px; gap: 20px; background: #fff; box-shadow: 12px 12px 0 var(--black);">
+                    <div style="background: var(--black); color: #fff; padding: 8px 20px; font-size: 18px; text-transform: uppercase; letter-spacing: 3px; font-family: var(--font-pixel); align-self: flex-start;">Типичные аналоги</div>
+                    <div style="display: flex; flex-direction: column; gap: 16px; flex: 1;">
+                        <div style="border: 3px solid #000; padding: 18px 24px; background: #f5f5f5; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-pixel); font-size: 18px;">📋 Excel-таблица <span style="color: #888; font-size: 15px;">≥ 50 колонок</span></div>
+                        <div style="border: 3px solid #000; padding: 18px 24px; background: #f5f5f5; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-pixel); font-size: 18px;">📱 Мобильное приложение <span style="color: var(--red); font-size: 15px;">регистрация + оплата</span></div>
+                        <div style="border: 3px solid #000; padding: 18px 24px; background: #f5f5f5; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-pixel); font-size: 18px;">📒 Бумажный журнал <span style="color: #888; font-size: 15px;">теряется</span></div>
+                    </div>
+                    <div style="border: 3px solid var(--red); padding: 20px 24px; background: var(--red); color: #fff; font-family: var(--font-pixel); font-size: 20px; text-align: center; letter-spacing: 1px;">Наш сайт: открыл браузер — готово ✓</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Слайд 3 -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box" title="Скрыть окно"></div>
+            <div class="stripes"></div>
+            <div class="title-text">Goals_Tasks.txt</div>
+            <div class="zoom-box" title="Развернуть"></div>
+        </div>
+        <div class="content">
+            <h2>Цель и Задачи</h2>
+            <p style="font-family: var(--font-pixel); font-size: 24px; margin-bottom: 20px;">Написать сайт, который сам подскажет, что пора менять.</p>
+            <div class="grid-2" style="gap: 20px;">
+                <div class="card">
+                    <h3>1. Данные</h3>
+                    <p>Сбор регламентов ТО (Toyota, Hyundai).</p>
+                </div>
+                <div class="card">
+                    <h3>2. Дизайн</h3>
+                    <p>Удобный UI, Mobile-first подход.</p>
+                </div>
+                <div class="card">
+                    <h3>3. Логика</h3>
+                    <p>JS-алгоритмы для подсчета сроков.</p>
+                </div>
+                <div class="card">
+                    <h3>4. Релиз</h3>
+                    <p>Деплой на платформе GitHub Pages.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Слайд 4 -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box" title="Скрыть окно"></div>
+            <div class="stripes"></div>
+            <div class="title-text">Design.fig</div>
+            <div class="zoom-box" title="Развернуть"></div>
+        </div>
+        <div class="content">
+            <div class="grid-2" style="align-items: stretch; height: calc(100vh - 200px);">
+                <div style="border: 3px solid var(--black); background: #ecece8; display: flex; flex-direction: column; overflow: hidden; box-shadow: 12px 12px 0 #000;">
+                    <!-- Мини-имитация шапки сайта -->
+                    <div style="background: #ecece8; border-bottom: 3px solid #000; padding: 10px 16px; display: flex; align-items: center; gap: 10px; font-family: 'Pixelify Sans', monospace; font-size: 14px; font-weight: bold; flex-shrink: 0;">
+                        <div style="width: 14px; height: 14px; border: 2px solid #000; background: #ff3333;"></div>
+                        <div style="width: 14px; height: 14px; border: 2px solid #000;"></div>
+                        <span style="margin-left: 8px; text-transform: uppercase; letter-spacing: 1px;">🚗 Car Service Tracker</span>
+                        <span style="margin-left: auto; padding: 4px 12px; background: #cc4444; color: #fff; font-size: 12px; border: 1px solid #000;">Главная</span>
+                        <span style="padding: 4px 12px; font-size: 12px;">Гараж</span>
+                        <span style="padding: 4px 12px; font-size: 12px;">Запчасти</span>
+                    </div>
+                    <!-- Палитра -->
+                    <div style="padding: 24px; flex: 1; display: flex; flex-direction: column; gap: 20px;">
+                        <div>
+                            <div style="font-family: 'Pixelify Sans', monospace; font-size: 16px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; border-bottom: 3px solid #000; padding-bottom: 6px; margin-bottom: 12px;">Цветовая палитра</div>
+                            <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                                <div style="flex:1; height: 56px; background: #dcceb8; border: 2px solid #000;"></div>
+                                <div style="flex:1; height: 56px; background: #cc4444; border: 2px solid #000;"></div>
+                                <div style="flex:1; height: 56px; background: #dcb336; border: 2px solid #000;"></div>
+                                <div style="flex:1; height: 56px; background: #111111; border: 2px solid #000;"></div>
+                                <div style="flex:1; height: 56px; background: #ecece8; border: 2px solid #000;"></div>
+                            </div>
+                            <div style="font-family: 'Pixelify Sans', monospace; font-size: 13px; display: flex; justify-content: space-between;"><span>Бумага</span><span style="color:#cc4444;">Primary</span><span style="color:#dcb336;">Accent</span><span>Чёрный</span><span>Белый</span></div>
+                        </div>
+                        <div>
+                            <div style="font-family: 'Pixelify Sans', monospace; font-size: 16px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; border-bottom: 3px solid #000; padding-bottom: 6px; margin-bottom: 12px;">Шрифты</div>
+                            <div style="font-family: 'Pixelify Sans', monospace; font-size: 20px; font-weight: bold; margin-bottom: 10px;">Press Start 2P — заголовки</div>
+                            <div style="font-family: 'Source Serif 4', serif; font-size: 20px;">PT Mono — основной текст</div>
+                        </div>
+                        <div>
+                            <div style="font-family: 'Pixelify Sans', monospace; font-size: 16px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; border-bottom: 3px solid #000; padding-bottom: 6px; margin-bottom: 12px;">Компоненты</div>
+                            <div style="display: flex; gap: 14px;">
+                                <div style="flex: 1; border: 3px solid #000; background: #fff; padding: 14px 16px; box-shadow: 6px 6px 0 #000; font-family: 'Pixelify Sans', monospace; font-size: 14px; text-align: center;">Карточка</div>
+                                <div style="flex: 1; border: 3px solid #000; background: #cc4444; color: #fff; padding: 14px 16px; box-shadow: 6px 6px 0 #000; font-family: 'Pixelify Sans', monospace; font-size: 14px; text-align: center;">Кнопка</div>
+                                <div style="flex: 1; border: 3px solid #000; background: #ecece8; padding: 14px 16px; box-shadow: 6px 6px 0 #000; font-family: 'Source Serif 4', serif; font-size: 14px; text-align: center; font-weight: bold; display: flex; align-items: center; justify-content: space-between;">Инпут <span style="color:#bbb;">|</span></div>
+                            </div>
+                        </div>
+                        <div style="margin-top: auto;">
+                            <div style="font-family: 'Pixelify Sans', monospace; font-size: 16px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; border-bottom: 3px solid #000; padding-bottom: 6px; margin-bottom: 12px;">Тема</div>
+                            <div style="display: flex; gap: 10px;">
+                                <div style="flex: 1; background: #ecece8; border: 3px solid #000; padding: 14px; text-align: center; font-family: 'Pixelify Sans', monospace; font-size: 13px; font-weight: bold;">☀ Светлая</div>
+                                <div style="flex: 1; background: #222; color: #dadada; border: 3px solid #000; padding: 14px; text-align: center; font-family: 'Pixelify Sans', monospace; font-size: 13px; font-weight: bold;">🌙 Тёмная</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <h2>Дизайн</h2>
+                    <ul>
+                        <li><strong>Neo-Brutalism:</strong> жирные границы, тени, пиксели.</li>
+                        <li><strong>Mac OS 1992:</strong> полосатый titlebar, шахматка.</li>
+                        <li><strong>Смартфоны:</strong> верстка для мобильных.</li>
+                        <li><strong>Две темы:</strong> светлая и тёмная (CSS vars).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Слайд 5 -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box" title="Скрыть окно"></div>
+            <div class="stripes"></div>
+            <div class="title-text">TechStack.sys</div>
+            <div class="zoom-box" title="Развернуть"></div>
+        </div>
+        <div class="content">
+            <h2>Стек Технологий</h2>
+            <p style="font-family: var(--font-pixel); font-size: 24px;">Без тяжелых фреймворков. Максимальная скорость.</p>
+            
+            <div class="grid-2" style="margin-top: 40px;">
+                <div class="card" style="text-align: center;">
+                    <h3 style="font-size: 40px;">HTML5</h3>
+                    <p>Семантическая верстка</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <h3 style="font-size: 40px;">CSS3</h3>
+                    <p>Flexbox, Grid, переменные</p>
+                </div>
+            </div>
+            <div class="card" style="text-align: center; background: var(--black); color: var(--white); border-color: var(--red);">
+                <h3 style="font-size: 40px; color: var(--red);">VANILLA JS</h3>
+                <p style="color: var(--white);">Чистый JavaScript без библиотек</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Слайд 6 -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box" title="Скрыть окно"></div>
+            <div class="stripes"></div>
+            <div class="title-text">Logic.js</div>
+            <div class="zoom-box" title="Развернуть"></div>
+        </div>
+        <div class="content">
+            <h2>Логика (JS)</h2>
+            <div class="grid-2">
+                <div>
+                    <ul style="margin-top: 20px;">
+                        <li><strong>Автономность:</strong> сохранение в Local Storage браузера.</li>
+                        <li><strong>Умный поиск:</strong> внедрен алгоритм Левенштейна.</li>
+                        <li><strong>Калькулятор стоимости:</strong> авто-расчет по пробегу.</li>
+                    </ul>
+                </div>
+                <div style="background: #0d0d0d; border: 3px solid #000; box-shadow: 8px 8px 0 #000; padding: 0; overflow: hidden; min-height: 300px; display: flex; flex-direction: column;">
+                    <div style="background: #1a1a1a; border-bottom: 2px solid #333; padding: 6px 14px; display: flex; align-items: center; gap: 8px; font-family: monospace; font-size: 11px; color: #888;">
+                        <div style="width: 10px; height: 10px; border-radius: 50%; background: #ff5f57;"></div>
+                        <div style="width: 10px; height: 10px; border-radius: 50%; background: #febc2e;"></div>
+                        <div style="width: 10px; height: 10px; border-radius: 50%; background: #28c840;"></div>
+                        <span style="margin-left: 10px;">utils.js — Алгоритм Левенштейна</span>
+                    </div>
+                    <pre style="margin: 0; padding: 14px 18px; font-family: 'Courier New', monospace; font-size: 12px; line-height: 1.6; color: #d4d4d4; overflow: auto; flex: 1;"><span style="color:#569cd6;">function</span> <span style="color:#dcdcaa;">getLevenshteinDistance</span>(a, b) {
+  <span style="color:#c586c0;">if</span> (a.length === <span style="color:#b5cea8;">0</span>) <span style="color:#c586c0;">return</span> b.length;
+  <span style="color:#c586c0;">if</span> (b.length === <span style="color:#b5cea8;">0</span>) <span style="color:#c586c0;">return</span> a.length;
+
+  <span style="color:#569cd6;">const</span> matrix = [];
+  <span style="color:#c586c0;">for</span> (<span style="color:#569cd6;">let</span> i = <span style="color:#b5cea8;">0</span>; i &lt;= b.length; i++)
+    matrix[i] = [i];
+  <span style="color:#c586c0;">for</span> (<span style="color:#569cd6;">let</span> j = <span style="color:#b5cea8;">0</span>; j &lt;= a.length; j++)
+    matrix[<span style="color:#b5cea8;">0</span>][j] = j;
+
+  <span style="color:#c586c0;">for</span> (<span style="color:#569cd6;">let</span> i = <span style="color:#b5cea8;">1</span>; i &lt;= b.length; i++) {
+    <span style="color:#c586c0;">for</span> (<span style="color:#569cd6;">let</span> j = <span style="color:#b5cea8;">1</span>; j &lt;= a.length; j++) {
+      <span style="color:#c586c0;">if</span> (b[i-<span style="color:#b5cea8;">1</span>] === a[j-<span style="color:#b5cea8;">1</span>]) {
+        matrix[i][j] = matrix[i-<span style="color:#b5cea8;">1</span>][j-<span style="color:#b5cea8;">1</span>];
+      } <span style="color:#c586c0;">else</span> {
+        matrix[i][j] = Math.<span style="color:#dcdcaa;">min</span>(
+          matrix[i-<span style="color:#b5cea8;">1</span>][j-<span style="color:#b5cea8;">1</span>] + <span style="color:#b5cea8;">1</span>, <span style="color:#6a9955;">// замена</span>
+          matrix[i][j-<span style="color:#b5cea8;">1</span>]   + <span style="color:#b5cea8;">1</span>, <span style="color:#6a9955;">// вставка</span>
+          matrix[i-<span style="color:#b5cea8;">1</span>][j]   + <span style="color:#b5cea8;">1</span>  <span style="color:#6a9955;">// удаление</span>
+        );
+      }
+    }
+  }
+  <span style="color:#c586c0;">return</span> matrix[b.length][a.length];
+}</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Слайд 7 -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box" title="Скрыть окно"></div>
+            <div class="stripes"></div>
+            <div class="title-text">Demo.app</div>
+            <div class="zoom-box" title="Развернуть"></div>
+        </div>
+        <div class="content" style="display: flex; flex-direction: column;">
+            <h2 style="margin-bottom: 24px;">Интерфейс вживую</h2>
+            <div class="grid-2" style="gap: 30px; align-items: start;">
+
+                <!-- Левая картинка -->
+                <div style="display: flex; flex-direction: column; border: 3px solid var(--black); box-shadow: 12px 12px 0 var(--black); overflow: hidden;">
+                    <div style="background: var(--white); border-bottom: 3px solid var(--black); padding: 6px 12px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+                        <div style="width: 14px; height: 14px; border: 2px solid #000; background: var(--red); flex-shrink: 0;"></div>
+                        <span style="font-family: var(--font-pixel); font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-left: 4px;">📁 Карточка автомобиля — Мой гараж</span>
+                    </div>
+                    <img src="Карточка автомобиля (Мой гараж).png"
+                         alt="Карточка автомобиля — Мой гараж"
+                         style="width: 100%; height: auto; display: block; max-height: 72vh; object-fit: contain; background: #f9f9f9;">
+                </div>
+
+                <!-- Правая картинка -->
+                <div style="display: flex; flex-direction: column; border: 3px solid var(--black); box-shadow: 12px 12px 0 var(--black); overflow: hidden;">
+                    <div style="background: var(--white); border-bottom: 3px solid var(--black); padding: 6px 12px; display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+                        <div style="width: 14px; height: 14px; border: 2px solid #000; background: var(--red); flex-shrink: 0;"></div>
+                        <span style="font-family: var(--font-pixel); font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-left: 4px;">📋 Форма регистрации ТО</span>
+                    </div>
+                    <img src="Правая картинка — Форма регистрации ТО.png"
+                         alt="Форма регистрации ТО"
+                         style="width: 100%; height: auto; display: block; max-height: 72vh; object-fit: contain; background: #f9f9f9;">
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Слайд 8 -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box" title="Скрыть окно"></div>
+            <div class="stripes"></div>
+            <div class="title-text">Summary.end</div>
+            <div class="zoom-box" title="Развернуть"></div>
+        </div>
+        <div class="content" style="text-align: center;">
+            <h1 style="font-size: 70px; margin-top: 40px;">ИТОГИ</h1>
+            <p style="font-family: var(--font-pixel); font-size: 26px;">Рабочий сервис для контроля ТО автомобиля.</p>
+            
+            <div class="grid-2" style="text-align: left; margin-top: 50px;">
+                <div class="card" style="border-width: 4px;">
+                    <h3>Готово к работе</h3>
+                    <p>Проект не требует настройки.</p>
+                </div>
+                <div class="card" style="border-width: 4px;">
+                    <h3 style="color: var(--black);">Планы на будущее</h3>
+                    <p>Интеграция с дилерами и push-уведомления.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Слайд 9 — Спасибо за внимание -->
+    <div class="window">
+        <div class="title-bar">
+            <div class="close-box" title="Скрыть окно"></div>
+            <div class="stripes"></div>
+            <div class="title-text">Thanks.exe</div>
+            <div class="zoom-box" title="Развернуть"></div>
+        </div>
+        <div class="content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; position: relative; overflow: hidden;">
+            <canvas id="confetti-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;"></canvas>
+            <div style="position: relative; z-index: 1;">
+                <div style="background: var(--black); color: var(--white); font-family: var(--font-pixel); font-size: 18px; padding: 6px 24px; margin-bottom: 30px; display: inline-block; text-transform: uppercase; letter-spacing: 4px;">ФИНАЛ</div>
+                <h1 style="font-size: 80px; text-shadow: 8px 8px 0 var(--red); line-height: 1.1;">СПАСИБО<br>ЗА ВНИМАНИЕ</h1>
+                <p style="font-family: var(--font-pixel); font-size: 22px; margin-top: 30px; margin-bottom: 6px;">Бортовой Журнал Автомобиля</p>
+                <p style="font-family: var(--font-pixel); font-size: 18px; color: var(--red); margin: 0;">Гальберг М.Е. &nbsp;|&nbsp; 12 ТИС/24</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" id="btn-prev" disabled>Назад</button>
+        <div class="counter"><span id="slide-counter">1 / 8</span></div>
+        <button class="btn" id="btn-next">Вперед</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const windows = document.querySelectorAll('.window');
+            const btnPrev = document.getElementById('btn-prev');
+            const btnNext = document.getElementById('btn-next');
+            const counterText = document.getElementById('slide-counter');
+            const desktopIcon = document.getElementById('desktop-icon');
+            
+            let currentSlide = 0;
+            
+            function showSlide(index) {
+                // Запоминаем состояние текущего активного окна
+                const oldWin = document.querySelector('.window.active') || windows[0];
+                const newWin = windows[index];
+                
+                const isMinimized = oldWin.classList.contains('minimized');
+                const isMaximized = oldWin.classList.contains('maximized');
+                const w = oldWin.style.width;
+                const h = oldWin.style.height;
+                const dx = oldWin.style.getPropertyValue('--dx') || '0px';
+                const dy = oldWin.style.getPropertyValue('--dy') || '0px';
+
+                // Применяем сохраненное состояние к новому слайду
+                if (isMinimized) newWin.classList.add('minimized');
+                else newWin.classList.remove('minimized');
+                
+                if (isMaximized) newWin.classList.add('maximized');
+                else newWin.classList.remove('maximized');
+
+                newWin.style.width = w;
+                newWin.style.height = h;
+                newWin.style.setProperty('--dx', dx);
+                newWin.style.setProperty('--dy', dy);
+
+                windows.forEach((win, i) => {
+                    if (i === index) {
+                        // Перезапуск CSS-анимации глитча (только если окно не свернуто и не развернуто на весь экран)
+                        if (!isMinimized && !isMaximized) {
+                            win.classList.remove('active');
+                            void win.offsetWidth; 
+                        }
+                        win.classList.add('active');
+                    } else {
+                        win.classList.remove('active');
+                    }
+                });
+                
+                // Управляем видимостью иконки
+                desktopIcon.style.display = isMinimized ? 'flex' : 'none';
+                
+                counterText.innerText = (index + 1) + ' / ' + windows.length;
+                btnPrev.disabled = (index === 0);
+                btnNext.disabled = (index === windows.length - 1);
+            }
+            
+            btnNext.addEventListener('click', () => {
+                if (currentSlide < windows.length - 1) {
+                    currentSlide++;
+                    showSlide(currentSlide);
+                    playClickSound();
+                }
+            });
+            
+            btnPrev.addEventListener('click', () => {
+                if (currentSlide > 0) {
+                    currentSlide--;
+                    showSlide(currentSlide);
+                    playClickSound();
+                }
+            });
+            
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'ArrowRight') btnNext.click();
+                else if (event.key === 'ArrowLeft') btnPrev.click();
+            });
+
+            // Функционал: Закрыть окно (свернуть)
+            document.querySelectorAll('.close-box').forEach(box => {
+                box.addEventListener('click', (e) => {
+                    const win = e.target.closest('.window');
+                    win.classList.add('minimized');
+                    desktopIcon.style.display = 'flex'; // Показываем иконку
+                    playClickSound();
+                });
+            });
+
+            // Функционал: Развернуть на весь экран
+            document.querySelectorAll('.zoom-box').forEach(box => {
+                box.addEventListener('click', (e) => {
+                    const win = e.target.closest('.window');
+                    // Сбрасываем изменения от ресайза
+                    win.style.width = ''; 
+                    win.style.height = '';
+                    
+                    win.classList.toggle('maximized');
+                    playClickSound();
+                });
+            });
+
+            // Функционал: Восстановить окно двойным кликом по иконке дискеты
+            desktopIcon.addEventListener('dblclick', () => {
+                const win = document.querySelector('.window.active');
+                if (win) {
+                    win.classList.remove('minimized');
+                }
+                desktopIcon.style.display = 'none';
+                playClickSound();
+            });
+
+            // Drag & Drop
+            let isDragging = false;
+            let currentWindow = null;
+            let startX, startY;
+
+            document.querySelectorAll('.title-bar').forEach(bar => {
+                bar.addEventListener('mousedown', e => {
+                    // Игнорируем драг, если клик был по кнопкам управления окном
+                    if (e.target.classList.contains('close-box') || e.target.classList.contains('zoom-box')) {
+                        return;
+                    }
+                    
+                    isDragging = true;
+                    currentWindow = e.target.closest('.window');
+                    startX = e.clientX;
+                    startY = e.clientY;
+                    
+                    const style = getComputedStyle(currentWindow);
+                    currentWindow.dataset.dx = parseInt(style.getPropertyValue('--dx')) || 0;
+                    currentWindow.dataset.dy = parseInt(style.getPropertyValue('--dy')) || 0;
+                    
+                    document.addEventListener('mousemove', drag);
+                    document.addEventListener('mouseup', stopDrag);
+                });
+            });
+
+            function drag(e) {
+                if (!isDragging) return;
+                const dx = parseInt(currentWindow.dataset.dx) + (e.clientX - startX);
+                const dy = parseInt(currentWindow.dataset.dy) + (e.clientY - startY);
+                currentWindow.style.setProperty('--dx', dx + 'px');
+                currentWindow.style.setProperty('--dy', dy + 'px');
+            }
+
+            function stopDrag() {
+                isDragging = false;
+                document.removeEventListener('mousemove', drag);
+                document.removeEventListener('mouseup', stopDrag);
+            }
+
+            // Web Audio API
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            function playClickSound() {
+                if(audioCtx.state === 'suspended') audioCtx.resume();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(150, audioCtx.currentTime);
+                oscillator.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 0.1);
+            }
+        });
+    </script>
+</body>
+</html>
