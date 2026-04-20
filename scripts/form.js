@@ -290,6 +290,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const brandDropdown = document.getElementById('brand-dropdown');
     const modelDropdown = document.getElementById('model-dropdown');
     const submitButton = formPanel.querySelector('button[type="submit"]');
+    const serviceModal = document.getElementById('service-modal');
+    const serviceModalText = document.getElementById('service-modal-text');
+    const serviceModalLink = document.getElementById('service-modal-link');
     const defaultListMarkup = `
         <h3>Красивый список деталей</h3>
         <p class="text-sm-light-mb-20">
@@ -360,6 +363,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetListPanel() {
         listPanel.innerHTML = defaultListMarkup;
+    }
+
+    function closeServiceModal() {
+        if (!serviceModal) return;
+        serviceModal.hidden = true;
+        document.body.classList.remove('menu-open');
+    }
+
+    function openServiceModal(foundBrand, foundModel, mileageValue) {
+        if (!serviceModal || !serviceModalLink || !serviceModalText) return;
+
+        const params = new URLSearchParams({
+            brand: formatTitle(foundBrand),
+            model: formatTitle(foundModel),
+            mileage: String(mileageValue),
+            serviceType: 'routine'
+        });
+
+        const normalizedPhotoUrl = normalizeOnlinePhotoUrl(photoUrlInput ? photoUrlInput.value : '');
+        if (normalizedPhotoUrl) {
+            params.set('photoUrl', normalizedPhotoUrl);
+        }
+
+        serviceModalText.textContent = `Для ${formatTitle(foundBrand)} ${formatTitle(foundModel)} уже пора менять детали. Перейти к записи на обслуживание?`;
+        serviceModalLink.href = `form.html?${params.toString()}`;
+        serviceModal.hidden = false;
+        document.body.classList.add('menu-open');
     }
 
     // Отрисовка выпадающего списка
@@ -441,9 +471,22 @@ document.addEventListener('DOMContentLoaded', () => {
         input.addEventListener('change', markFormAsChanged);
     });
 
+    if (serviceModal) {
+        serviceModal.querySelectorAll('[data-modal-close]').forEach((element) => {
+            element.addEventListener('click', closeServiceModal);
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && !serviceModal.hidden) {
+                closeServiceModal();
+            }
+        });
+    }
+
     // --- 4. ОТПРАВКА ФОРМЫ (ГЕНЕРАЦИЯ СПИСКА ТО) ---
     formPanel.addEventListener('submit', (e) => {
         e.preventDefault();
+        closeServiceModal();
 
         const brandVal = brandInput.value.trim().toLowerCase();
         let modelVal = normalizeModelAlias(modelInput.value);
@@ -538,6 +581,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     lastCheckedSignature = currentSignature;
                     hasPendingChanges = false;
                     updateSubmitState();
+                    if (bestSchedule.parts && bestSchedule.parts.length > 0) {
+                        openServiceModal(foundBrand, foundModel, mileageVal);
+                    }
                     return; // Успешный выход
                 }
             }
@@ -562,6 +608,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Кнопка "Сбросить"
     formPanel.addEventListener('reset', () => {
         resetListPanel();
+        closeServiceModal();
         brandDropdown.classList.remove('active');
         modelDropdown.classList.remove('active');
         lastCheckedSignature = null;

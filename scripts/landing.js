@@ -8,6 +8,26 @@ document.addEventListener('DOMContentLoaded', () => {
         return /^https?:\/\//i.test(normalizedValue) ? normalizedValue : '';
     }
 
+    function prefillRegisterForm() {
+        if (!registerForm) return;
+
+        const params = new URLSearchParams(window.location.search);
+        const fieldMap = {
+            brand: document.getElementById('brand'),
+            model: document.getElementById('model'),
+            mileage: document.getElementById('mileage'),
+            serviceType: document.getElementById('serviceType'),
+            photoUrl: document.getElementById('photoUrl')
+        };
+
+        Object.entries(fieldMap).forEach(([key, field]) => {
+            if (!field || !params.has(key)) return;
+            field.value = params.get(key);
+        });
+    }
+
+    prefillRegisterForm();
+
     if (registerForm) {
         registerForm.addEventListener('submit', (e) => {
             e.preventDefault();
